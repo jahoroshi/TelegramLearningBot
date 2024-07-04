@@ -38,8 +38,12 @@ def generate_output_text(card_data=None, front=None, extra_text=''):
                               "If this issue persists please contact us through our help center at ankichat.com")
 
 
-
-async def timer_del_msg(message, timer: int = 2):
+async def timer_del_msg(message, timer: int = 1):
     await asyncio.sleep(timer)
     await message.delete()
+
+
+async def timer_send_msg(message, timer: int = 10):
+    await asyncio.sleep(timer)
+    await message.answer('T!!!!!!he correct answer is 🫴  👈')
 

@@ -2,7 +2,11 @@ import aiohttp
 
 async def response_handler(response):
     if response.status in (200, 201):
-        data = await response.json()
+        if response.headers.get('Content-Type').startswith('audio'):
+            data = await response.read()
+            print(data[:10])
+        else:
+            data = await response.json()
         return data
     else:
         print(f'Error: {response.status}')

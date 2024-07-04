@@ -105,6 +105,9 @@ async def scramble_letters_output(elements_count):
     columns = (5, 3, 2)[(max_word > 0) + (max_word > 6) + (max_word > 15) - 1]
     return keyboard.adjust(columns).as_markup()
 
+async def quiz():
+    ...
+
 
 # async def scramble_letters_output(elements_count):
 #     keyboard = InlineKeyboardBuilder()
