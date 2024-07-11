@@ -4,7 +4,7 @@ import random
 import re
 
 
-def generate_output_text(card_data=None, front=None, extra_text=''):
+def gen_output_text(card_data=None, front=None, extra_text=''):
     emoji = random.choice(('🫠', '🔅', '🔆', '🔥', '✨', '️❗️', '😊', '😂', '🎯', '✴️', '💢', '🤓', '🤔'))
     rating_names = {1: 'Again', 2: 'Good', 3: 'Hard', 4: 'Easy'}
 
@@ -20,7 +20,7 @@ def generate_output_text(card_data=None, front=None, extra_text=''):
 {emoji}   _*{front.ljust(20, ' ')}*_
 
 >*Answer*
->🔥 _*{back.center(35, ' ')}*_  🔥
+>🔥🔥 _*{back.center(35, ' ')}*_  
 
 
 {ratings_text}
@@ -46,4 +46,5 @@ async def timer_del_msg(message, timer: int = 1):
 async def timer_send_msg(message, timer: int = 10):
     await asyncio.sleep(timer)
     await message.answer('T!!!!!!he correct answer is 🫴  👈')
+
 

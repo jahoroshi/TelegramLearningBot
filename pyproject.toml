@@ -70,6 +70,7 @@ virtualenv = "20.26.3"
 yarl = "1.9.4"
 zipp = "3.19.2"
 pydub = "^0.25.1"
+humanize = "^4.10.0"
 
 
 [build-system]

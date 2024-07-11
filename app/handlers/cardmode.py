@@ -3,7 +3,6 @@ from typing import Optional
 
 from aiogram import F, Router
 from aiogram.enums import ParseMode
-from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import BufferedInputFile
@@ -12,9 +11,10 @@ from pydantic import ValidationError
 
 import app.database.requests as rq
 import app.keyboards as kb
+from app.handlers.start import cmd_start
 from app.middlewares import TestMiddleware
 from app.requests import send_request
-from app.services.handlers import generate_output_text
+from app.services.cardmode import gen_output_text
 from app.validators import StartConfigValidator, card_data_isvalid
 from settings import BASE_URL
 
@@ -42,17 +42,14 @@ def check_card_data(func):
         else:
             print('Firs argument must by CallbackQuery or Message')
             return
-        tg_user_id = args[0].from_user.id
         state: FSMContext = kwargs.get('state')
         data_store = await state.get_data()
         card_data = data_store.get('card_data')
         kwargs['data_store'] = data_store
         if card_data is None:
-            await card_mode_start(message=msg, state=state, tg_user_id=tg_user_id)
+            await card_mode_start(message=msg, state=state)
             return
-        # filtered_kwargs = {k: v for k, v in kwargs.items() if k in func.__annotations__}
         return await func(*args, **kwargs)
-        # return await func(*args, state=state, data_store=data_store)
 
     return wrapper
 
@@ -64,31 +61,19 @@ async def send_message_card_mode(message: Message, buttons_to_show: dict, text: 
     )
 
 
-@router.message(CommandStart())
-@router.callback_query(F.data == 'to_main')
-async def cmd_start(message: Message, state: FSMContext,):
-    if isinstance(message, Message):
-        await message.answer('Добро пожаловать', reply_markup=kb.studying_start)
-    else:
-        await state.clear()
-        await message.message.answer('Добро пожаловать', reply_markup=kb.studying_start)
-
-
-
-@router.message(F.text == 'Start studying')
+# @router.callback_query(F.data.startswith('start_studying_'))
 async def card_mode_start(message: Message, state: FSMContext, slug: Optional[str] = None,
-                          study_mode: Optional[str] = None, tg_user_id: Optional[int] = None):
-    tg_id = message.from_user.id if tg_user_id is None else tg_user_id
+                          study_mode: Optional[str] = None):
     data_store = await state.get_data()
     try:
         StartConfigValidator(**data_store.get('start_config', {}))
     except ValidationError:
         try:
+            tg_id = state.key.user_id
+
             if not slug and not study_mode:
                 start_url = f'http://localhost:8000/study/api/v1/get_start_config/{tg_id}/'
             else:
-                slug = 'qqq'
-                study_mode = 'new'
                 start_url = f'http://localhost:8000/study/api/v1/get_start_config/{slug}/{study_mode}/{tg_id}/'
 
             start_config = await send_request(start_url)
@@ -96,6 +81,11 @@ async def card_mode_start(message: Message, state: FSMContext, slug: Optional[st
             await state.update_data(start_config=start_config)
         except ValidationError:
             print(f"Validation error after fetching new config in {__name__}")
+            await message.answer('Something went wrong, try again.')
+            await cmd_start(message)
+            return
+        except Exception as e:
+            print(f'Error in {__name__}:  {e}')
             await message.answer('Something went wrong, try again.')
             await cmd_start(message)
             return
@@ -114,16 +104,18 @@ async def card_mode(message: Message, state: FSMContext, card_data: dict = None)
             card_data = await send_request(f'{BASE_URL}{url_get_card}')
         else:
             await card_mode_start(message=message, state=state)
+            return
 
     if not card_data_isvalid(card_data):
         await message.answer('Something went wrong, try again.')
         await cmd_start(message)
+        return
 
     await state.update_data(card_data=card_data)
 
     buttons_to_show = data_store['start_config']['buttons_to_show']
-    front_side = card_data.get("front_side")
-    text = generate_output_text(front=front_side, extra_text=text_hint)
+    front_side = card_data.get("front_side", '')
+    text = gen_output_text(front=front_side, extra_text=text_hint)
 
     await message.answer(text, reply_markup=await kb.card_mode_buttons(buttons_to_show),
                          parse_mode=ParseMode.MARKDOWN_V2)
@@ -154,7 +146,7 @@ async def rating_again(message: Message, state: FSMContext, data_store: dict = N
 @check_card_data
 async def show_back(callback: CallbackQuery, state: FSMContext, data_store: dict = None):
     card_data = data_store.get('card_data')
-    text = generate_output_text(card_data=card_data)
+    text = gen_output_text(card_data=card_data)
     await callback.message.edit_text(text, parse_mode=ParseMode.MARKDOWN_V2)
 
 
@@ -168,40 +160,11 @@ async def show_similar(callback: CallbackQuery, state: FSMContext, data_store: d
     similar_words_data = await send_request(f"{BASE_URL}{url}")
     if isinstance(similar_words_data, dict) and similar_words_data.get('similar_words'):
         front_side = card_data.get("front_side")
-        text = generate_output_text(front=front_side)
+        text = gen_output_text(front=front_side)
         await callback.message.edit_text(text, parse_mode=ParseMode.MARKDOWN_V2,
                                          reply_markup=await kb.similar_words_output(similar_words_data))
     else:
         await callback.answer('🤯🥳 Similar words not found. Please try again.')
-
-
-# @router.callback_query(F.data == 'button_show_similar3')
-# @check_card_data
-# async def show_similar_quiz(callback: CallbackQuery, state: FSMContext, data_store: dict = None):
-#     card_data = data_store.get('card_data')
-#     url_similar_words = data_store.get('start_config', {}).get('urls', {}).get('get_similar_words', '')
-#     mappings_id = card_data.get('mappings_id', '')
-#     url = url_similar_words.replace('dummy_mappings_id', str(mappings_id))
-#     similar_words_data = await send_request(f"{BASE_URL}{url}")
-#     if isinstance(similar_words_data, dict) and (options := similar_words_data.get('similar_words')):
-#         front_side = card_data.get("front_side")
-#         back_side = card_data.get("back_side")
-#         await callback.message.delete()
-#         await bot.send_poll(
-#             chat_id=callback.message.chat.id,
-#             question=front_side,
-#             options=options,
-#             is_anonymous=False,  # Опрос будет анонимным
-#             type='quiz',  # Тип опроса: обычный (regular) или викторина (quiz)
-#             allows_multiple_answers=False,  # Разрешить несколько ответов
-#             open_period=600,  # Опрос будет активен в течение 600 секунд (10 минут)
-#             # explanation="Это вопрос для тестирования опроса",  # Объяснение (только для викторин)
-#             # explanation_entities=[],  # Специальные сущности в объяснении (опционально)
-#             correct_option_id=sum(index for index, val in enumerate(options) if val == back_side)
-#             # Индекс правильного ответа (только для викторин)
-#         )
-#     else:
-#         await callback.answer('🤯🥳 Similar words not found. Please try again.')
 
 
 @router.callback_query(F.data.startswith('similar_'))
@@ -213,10 +176,10 @@ async def similar_answer_check(callback: CallbackQuery, state: FSMContext, data_
     if user_answer == 'correct':
         await callback.message.delete()
         extra_text = '🎉 Correct\!'
-        text = generate_output_text(card_data=card_data, extra_text=extra_text)
+        text = gen_output_text(card_data=card_data, extra_text=extra_text)
         await callback.message.answer(text, parse_mode=ParseMode.MARKDOWN_V2)
     else:
-        text = generate_output_text(front=card_data.get("front_side"))
+        text = gen_output_text(front=card_data.get("front_side"))
         await callback.message.edit_text(text, parse_mode=ParseMode.MARKDOWN_V2)
         await callback.message.answer('The correct answer is 🫴 {} 👈'.format(right_answer))
 
@@ -225,6 +188,7 @@ async def similar_answer_check(callback: CallbackQuery, state: FSMContext, data_
 @check_card_data
 async def scramble_letters(callback: CallbackQuery, state: FSMContext, data_store: dict = None,
                            scrambled_segment: str = None, guessed_segment: str = None, is_sentence: bool = None):
+    await callback.answer()
     if is_sentence is None:
         back_side = data_store.get('card_data', {}).get('back_side')
         is_sentence = len(elements := back_side.split()) > 3
@@ -240,9 +204,9 @@ async def scramble_letters(callback: CallbackQuery, state: FSMContext, data_stor
 
     front_side = data_store.get('card_data', {}).get("front_side")
     if guessed_segment:
-        text = generate_output_text(front=front_side, extra_text=guessed_segment)
+        text = gen_output_text(front=front_side, extra_text=guessed_segment)
     else:
-        text = generate_output_text(front=front_side)
+        text = gen_output_text(front=front_side)
     await callback.message.edit_text(text, parse_mode=ParseMode.MARKDOWN_V2,
                                      reply_markup=await kb.scramble_letters_output(
                                          dict(sorted(elements_count.items()))))
@@ -266,7 +230,7 @@ async def scramble_letters_check(callback: CallbackQuery, state: FSMContext, dat
                                    guessed_segment=guessed_segment, is_sentence=is_sentence)
         else:
             card_data = data_store.get('card_data')
-            text = generate_output_text(card_data=card_data)
+            text = gen_output_text(card_data=card_data)
             await callback.message.delete()
             await state.update_data(scrambler={})
             await callback.message.answer(text, parse_mode=ParseMode.MARKDOWN_V2)
@@ -289,7 +253,7 @@ async def show_first_letters(callback: CallbackQuery, state: FSMContext, data_st
     iteration = int(step) if step.isdigit() else 1
 
     if step and iteration * 2 >= max_len:
-        text = generate_output_text(card_data=data_store.get('card_data', {}))
+        text = gen_output_text(card_data=data_store.get('card_data', {}))
         await callback.message.edit_text(text, parse_mode=ParseMode.MARKDOWN_V2)
         return
 
@@ -297,7 +261,7 @@ async def show_first_letters(callback: CallbackQuery, state: FSMContext, data_st
         map(lambda x: x[:iteration * 2] + '*' * (len(x) - iteration * 2) if len(x) > iteration * 2 else x,
             prepared_text))
 
-    text = generate_output_text(front=front_side, extra_text='  '.join(masked_text))
+    text = gen_output_text(front=front_side, extra_text='  '.join(masked_text))
     button_name = f'show_first_letters_{iteration + 1}'
     buttons = {button_name: True}
     letters_to_show = (iteration + 1) * 2
@@ -335,7 +299,7 @@ async def text_to_speech(callback: CallbackQuery, state: FSMContext, data_store:
     sound = await send_request(f"{BASE_URL}{url}")
     file = BufferedInputFile(sound, filename=front_side)
 
-    text = generate_output_text(front=front_side)
+    text = gen_output_text(front=front_side)
 
     await callback.message.edit_text(
         text,

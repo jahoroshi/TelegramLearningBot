@@ -18,8 +18,10 @@ from app.database.requests import get_categories, get_category_item
 #     resize_keyboard=True,
 # input_field_placeholder='Выберите пункт!!!')
 
-studying_start = ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text='Start studying')]],
-                                     input_field_placeholder='Press to Start Studying')
+studying_start = ReplyKeyboardMarkup(
+    keyboard=[[KeyboardButton(text='Start studying')], [KeyboardButton(text='Test asyncio')],
+              [KeyboardButton(text='Decks')]],
+    input_field_placeholder='Press to Start Studying', resize_keyboard=True)
 
 mem_ratings2 = ReplyKeyboardMarkup(keyboard=[
     [KeyboardButton(text='Again'), KeyboardButton(text='Good'),
@@ -60,7 +62,7 @@ async def card_mode_buttons(buttons, update_names=None, order_scheme=None):
     for name, status in buttons.items():
         if status:
             keyboard.add(InlineKeyboardButton(text=button_names.get(name, name), callback_data=f'button_{name}'))
-    keyboard.add(InlineKeyboardButton(text='Finish Training', callback_data='to_main'))
+    keyboard.add(InlineKeyboardButton(text='Finish Training', callback_data='to_decks_list'))
     return keyboard.adjust(1, 2, 2, 2, repeat=True).as_markup()
 
 
@@ -104,6 +106,7 @@ async def scramble_letters_output(elements_count):
     max_word = max(map(len, elements_count))
     columns = (5, 3, 2)[(max_word > 0) + (max_word > 6) + (max_word > 15) - 1]
     return keyboard.adjust(columns).as_markup()
+
 
 async def quiz():
     ...
