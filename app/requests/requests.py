@@ -2,21 +2,29 @@ import logging
 
 import aiohttp
 
+
 async def response_handler(response):
     if response.status // 100 == 2:
-        if response.headers.get('Content-Type').startswith('audio'):
+        content_type = response.headers.get('Content-Type')
+        if content_type and content_type.startswith('audio'):
             data = await response.read()
-        else:
+        elif content_type and content_type.startswith('application/json'):
             data = await response.json()
-        return data
+        else:
+            data = await response.text()
+        return {'status': response.status, 'data': data}
     else:
         logging.error(f'!Error: {response.status}')
-        return None
+        return {'status': response.status}
 
 
 async def send_request(url, method='GET', data=None):
+    headers = {
+        'X-API-Key': 'your-unique-api-key-here',
+        'Content-Type': 'application/json'
+    }
     try:
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(headers=headers) as session:
             if method == 'GET':
                 async with session.get(url) as response:
                     return await response_handler(response)
@@ -28,22 +36,16 @@ async def send_request(url, method='GET', data=None):
                     return await response_handler(response)
             elif method == 'DELETE':
                 async with session.delete(url, json=data) as response:
-                    return response.status
+                    return await response_handler(response)
 
     except aiohttp.ClientError as e:
-        print(
-            f'Client Error: {e}',
-            f'Url: {url}'
-        )
-        return None
+        text = f'Error in {__name__}\nClient Error: {e}\nUrl: {url}'
+        logging.error(text)
+        return {'error_detail': text}
     except Exception as e:
-        print(
-            f'Error in {__name__}: {e}',
-            f'Url: {url}'
-        )
-        return None
-
-
+        text = f'Error in {__name__}\nClient Error: {e}\nUrl: {url}'
+        logging.error(text)
+        return {'error_detail': text}
 
 # async def set_data(url, data):
 #     try:

@@ -76,7 +76,8 @@ async def card_mode_start(message: Message, state: FSMContext, slug: Optional[st
             else:
                 start_url = f'http://localhost:8000/study/api/v1/get_start_config/{slug}/{study_mode}/{tg_id}/'
 
-            start_config = await send_request(start_url)
+            response = await send_request(start_url)
+            start_config = response.get('data')
             StartConfigValidator(**start_config if start_config else {})
             await state.update_data(start_config=start_config)
         except ValidationError:
@@ -101,9 +102,14 @@ async def card_mode(message: Message, state: FSMContext, card_data: dict = None)
     if not card_data:
         url_get_card = data_store.get('start_config', {}).get('urls', {}).get('get_card')
         if url_get_card:
-            card_data = await send_request(f'{BASE_URL}{url_get_card}')
+            response = await send_request(f'{BASE_URL}{url_get_card}')
+            card_data = response.get('data')
+            status = response.get('status')
+            if status // 100 != 2:
+                await cmd_start(message)
+                return
         else:
-            await card_mode_start(message=message, state=state)
+            await cmd_start(message)
             return
 
     if not card_data_isvalid(card_data):
@@ -138,7 +144,8 @@ async def rating_again(message: Message, state: FSMContext, data_store: dict = N
         'mappings_id': mappings_id,
         'rating': rating,
     }
-    new_card_data = await send_request(f"{BASE_URL}{url_get_card}", method='POST', data=requests_data)
+    response = await send_request(f"{BASE_URL}{url_get_card}", method='POST', data=requests_data)
+    new_card_data = response.get('data')
     await card_mode(message, state, card_data=new_card_data)
 
 
@@ -157,8 +164,10 @@ async def show_similar(callback: CallbackQuery, state: FSMContext, data_store: d
     url_similar_words = data_store.get('start_config', {}).get('urls', {}).get('get_similar_words', '')
     mappings_id = card_data.get('mappings_id', '')
     url = url_similar_words.replace('dummy_mappings_id', str(mappings_id))
-    similar_words_data = await send_request(f"{BASE_URL}{url}")
-    if isinstance(similar_words_data, dict) and similar_words_data.get('similar_words'):
+    response = await send_request(f"{BASE_URL}{url}")
+    similar_words_data = response.get('data')
+    status = response.get('status')
+    if status // 100 == 2 and similar_words_data:
         front_side = card_data.get("front_side")
         text = gen_output_text(front=front_side)
         await callback.message.edit_text(text, parse_mode=ParseMode.MARKDOWN_V2,
@@ -296,18 +305,24 @@ async def text_to_speech(callback: CallbackQuery, state: FSMContext, data_store:
     url_get_sound = start_config.get('urls', {}).get('get_sound', '')
 
     url = url_get_sound.replace('dummy_mappings_id', str(mappings_id))
-    sound = await send_request(f"{BASE_URL}{url}")
-    file = BufferedInputFile(sound, filename=front_side)
+    response = await send_request(f"{BASE_URL}{url}")
+    status = response.get('status')
+    sound = response.get('data')
+    if status // 100 == 2:
+        file = BufferedInputFile(sound, filename=front_side)
 
-    text = gen_output_text(front=front_side)
+        text = gen_output_text(front=front_side)
 
-    await callback.message.edit_text(
-        text,
-        reply_markup=await kb.card_mode_buttons(buttons_to_show, update_names=update_button_names),
-        parse_mode=ParseMode.MARKDOWN_V2,
-    )
+        await callback.message.edit_text(
+            text,
+            reply_markup=await kb.card_mode_buttons(buttons_to_show, update_names=update_button_names),
+            parse_mode=ParseMode.MARKDOWN_V2,
+        )
 
-    await callback.message.answer_voice(file)
+        await callback.message.answer_voice(file)
+    else:
+        await callback.answer('Something went wrong with converting text to speech')
+
 
 
 @router.callback_query(F.data.startswith('category_'))
