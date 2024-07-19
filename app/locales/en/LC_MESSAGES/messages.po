@@ -1,0 +1,6 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "greeting"
+msgstr "sqdsqasdqddHello! This is a multilingual bot!"

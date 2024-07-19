@@ -23,11 +23,11 @@ studying_start = ReplyKeyboardMarkup(
               [KeyboardButton(text='Decks')]],
     input_field_placeholder='Press to Start Studying', resize_keyboard=True)
 
-mem_ratings2 = ReplyKeyboardMarkup(keyboard=[
+mem_ratings22 = ReplyKeyboardMarkup(keyboard=[
     [KeyboardButton(text='Again'), KeyboardButton(text='Good'),
      KeyboardButton(text='Hard'), KeyboardButton(text='Easy')]
 ],
-    resize_keyboard=False,
+    resize_keyboard=True,
     input_field_placeholder='Select the recall level')
 
 
@@ -40,7 +40,7 @@ async def mem_ratings(ratings_count=None):
             keyboard.append(KeyboardButton(text=f'{value} ({count})'))
         else:
             keyboard.append(KeyboardButton(text=f'{value}'))
-    a = ReplyKeyboardMarkup(keyboard=[keyboard], resize_keyboard=False,
+    a = ReplyKeyboardMarkup(keyboard=[keyboard], resize_keyboard=True,
                             input_field_placeholder='Select the recall level')
     return a
 

@@ -1,6 +1,7 @@
 import functools
 
 
+
 def check_current_state(func):
     @functools.wraps(func)
     async def wrapper(*args, **kwargs):
@@ -14,4 +15,17 @@ def check_current_state(func):
             from app.handlers import to_decks_list
             return await to_decks_list(*args, **kwargs)
 
+    return wrapper
+
+
+def clear_current_state(func):
+    @functools.wraps(func)
+    async def wrapper(*args, **kwargs):
+        state = kwargs.get('state')
+        current_state = await state.get_state()
+        if current_state not in ('DeckViewingState:active', 'CardManage:card_ops_state', 'CardManage:is_two_sides'):
+            await state.clear()
+            from app.services import DeckViewingState
+            await state.set_state(DeckViewingState.active)
+        return await func(*args, **kwargs)
     return wrapper

@@ -1,14 +1,17 @@
 import asyncio
-import logging
 
 from aiogram import F, Router
+from aiogram.filters import Command
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from aiogram.types import Message
+from aiogram.utils.i18n import I18n
 
 import app.keyboards as kb
 from app.requests import send_request
+from app.services import set_user_commands
+from bot import i18n
 from settings import BASE_URL
 
 router = Router()
@@ -19,18 +22,16 @@ router = Router()
 @router.message(F.text == 'REFRESH')
 async def cmd_start(message: Message, state: FSMContext = None):
     # может приходить callback, сделать обработку!!!!!!!
-    telegram_id = state.key.user_id
+    if isinstance(message, CallbackQuery):
+        message = message.message
+    telegram_id = state.key.user_id if state else message.from_user.id
     url = f'{BASE_URL}/users/api/v1/manage/{telegram_id}/'
     response = await send_request(url, method='GET')
     if response.get('status') == 200:
-        try:
-            data = response.get('data')
-        except Exception as e:
-            logging.error(f"In {__name__}:  Connection error while reading JSON: {e}")
-            await message.answer("Не удалось получить данные с сервера. Попробуйте позже.")
-            return
         from app.handlers import decks_list
-        if data.get('language'):
+        if lang := response.get('data', {}).get('language'):
+            # i18n = I18n(path='app/locales', default_locale=lang)
+
             await decks_list(message, state)
         else:
             await decks_list(message, state)
@@ -47,6 +48,8 @@ async def cmd_start(message: Message, state: FSMContext = None):
         await asyncio.sleep(1.5)
         await message.answer(messages[opposite_language], reply_markup=await kb.choose_language(opposite_language))
 
+    await set_user_commands(message)
+
 
 @router.callback_query(F.data.startswith('set_language_'))
 async def set_language(callback: CallbackQuery, state: FSMContext):
@@ -57,3 +60,13 @@ async def set_language(callback: CallbackQuery, state: FSMContext):
     response = await send_request(url, method='PUT', data={'telegram_id': telegram_id, 'language': language})
     from app.handlers import decks_list
     await decks_list(callback.message, state)
+
+
+@router.message(Command('q'))
+async def sandbox(message: Message, state: FSMContext):
+    a = i18n.gettext('greeting')
+    await message.reply(a)
+@router.message(Command('qq'))
+async def sandbox(message: Message, state: FSMContext):
+    a = i18n.gettext('greeting')
+    await message.reply(a)

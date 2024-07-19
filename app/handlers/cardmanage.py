@@ -11,23 +11,10 @@ from aiogram.types import Message, CallbackQuery, ReplyKeyboardRemove
 import app.keyboards as kb
 from app.handlers import decks_list
 from app.requests import send_request
-from app.services import check_current_state, display_message_and_redirect
+from app.services import check_current_state, display_message_and_redirect, ImportCards, CardManage
 from settings import BASE_URL
 
 router = Router()
-
-
-class ImportCards(StatesGroup):
-    data = State()
-
-
-class CardManage(StatesGroup):
-    card_ops_state = State()
-    upd_list_index = State()
-    del_list_index = State()
-    front_side = State()
-    back_side = State()
-    is_two_sides = State()
 
 
 @router.callback_query(F.data.startswith('import_cards_'))
@@ -37,7 +24,7 @@ async def import_cards(callback: CallbackQuery, state: FSMContext):
     await state.set_state(ImportCards.data)
     slug = callback.data.split('_')[-1]
     await state.update_data(slug=slug)
-    await callback.message.answer(
+    await callback.message.edit_text(
         f'''🔔 *Import instruction:*
 » Max lenght message 4096 chars\.\n
 » Use semicolon * \; * as separator between sides\n
@@ -49,7 +36,7 @@ async def import_cards(callback: CallbackQuery, state: FSMContext):
 >{f"Orange":^12} *\;* {f"Апельсин":^11}
 
 _enter text or press back for cansel_
-''', parse_mode=ParseMode.MARKDOWN_V2, reply_markup=await kb.back())
+''', parse_mode=ParseMode.MARKDOWN_V2, reply_markup=await kb.back_to_decklist_or_deckdetails(slug))
 
 
 @router.message(ImportCards.data)
@@ -71,9 +58,9 @@ async def import_cards_handler(message: Message, state: FSMContext):
         text = response.get('data', {}).get('detail')
     else:
         text = '❗️ Something went wrong.'
-    await message.answer(text, reply_markup=ReplyKeyboardRemove())
-    await asyncio.sleep(1)
-    await decks_list(message, state)
+    await message.answer(text, reply_markup=await kb.back_to_decklist_or_deckdetails(slug))
+    # await asyncio.sleep(1)
+    # await decks_list(message, state)
 
 
 @router.callback_query(F.data.startswith('add_card_'))
@@ -83,7 +70,7 @@ async def card_create_begin(callback: CallbackQuery, state: FSMContext):
     await state.set_state(CardManage.front_side)
     await state.update_data(card_ops_state='create')
     await state.update_data(slug=slug)
-    await callback.message.edit_reply_markup(reply_markup=await kb.back())
+    await callback.message.edit_reply_markup(reply_markup=await kb.back_to_decklist_or_deckdetails(slug))
     await callback.message.answer('☝️ Enter front side\n>Or press    *back*   for cansel',
                                   parse_mode=ParseMode.MARKDOWN_V2, reply_markup=ReplyKeyboardRemove())
 
@@ -105,7 +92,7 @@ async def show_cards(callback: CallbackQuery, state: FSMContext):
             cards_id_index[index] = card.get('id')
             cards_list += f'» {index}. {card.get("side1")} ¦ {card.get("side2")}\n'
         if len(cards_list) != 0:
-            await callback.message.answer(cards_list, reply_markup=await kb.show_cards_action_buttons(slug))
+            await callback.message.edit_text(cards_list, reply_markup=await kb.show_cards_action_buttons(slug))
             await state.set_state(CardManage.card_ops_state)
             await state.update_data(cards_id_index=cards_id_index, slug=slug)
         else:
@@ -176,10 +163,11 @@ async def card_delete_getting_id(message: Message, state: FSMContext):
 
     deleted_cards_count = await asyncio.gather(*[delete_cards(card_id, slug) for card_id in cards_id_list])
     if deleted_cards_count != 0:
-        text = f'💣 Successfully deleted {deleted_cards_count} cards.'
+        text = f'💣 Successfully deleted {sum(deleted_cards_count)} cards.'
     else:
         text = f'❗️ Something went wrong.'
-    await display_message_and_redirect(message, state, text)
+    await message.answer(text, reply_markup=await kb.back_to_decklist_or_deckdetails(slug))
+    # await display_message_and_redirect(message, state, text)
 
 
 @router.message(CardManage.upd_list_index)
@@ -278,7 +266,7 @@ async def card_update_create_handler(callback: CallbackQuery, state: FSMContext)
     response = await send_request(url, method=method, data=card_data)
     status = response.get('status')
     if status // 100 == 2:
-        keyboard = await kb.card_manage_end(slug if operation == 'create' else None)
+        keyboard = await kb.card_create_upd_finish(slug, is_create=True if operation == 'create' else False)
         await callback.message.delete()
         await state.clear()
         await state.set_state(CardManage.card_ops_state)
