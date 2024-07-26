@@ -4,3 +4,21 @@ msgstr ""
 
 msgid "greeting"
 msgstr "sqdsqasdqddHello! This is a multilingual bot!"
+
+msgid "decks"
+msgstr "Decks"
+
+msgid "greeting_after_creating_test_deck"
+msgstr "🎁 We have created a test deck for you to explore all the features of our application.\n🤓 Once you are familiar with the features, you can delete the test deck and create your own custom decks.\n🫶 Good luck!"
+
+msgid "create_deck_ddn"
+msgstr "Create new deck"
+
+msgid "study_format_en"
+msgstr "How would you like to study the cards: by listening to the voice or by reading the text?"
+
+msgid "study_format_audio_en"
+msgstr "Listen to Voice"
+
+msgid "study_format_text_en"
+msgstr "Read Text"

@@ -28,3 +28,19 @@ class CardManage(StatesGroup):
     front_side = State()
     back_side = State()
     is_two_sides = State()
+
+
+class StartChooseLanguage(StatesGroup):
+    active = State()
+
+
+class Reg(StatesGroup):
+    name = State()
+    number = State()
+
+
+class CardMode(StatesGroup):
+    show_first_letters = State()
+
+class ServerError(StatesGroup):
+    active = State()

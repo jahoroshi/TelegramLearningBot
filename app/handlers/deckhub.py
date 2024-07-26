@@ -12,11 +12,14 @@ from aiogram.types import Message, CallbackQuery, BotCommand, MenuButtonCommands
 import app.keyboards as kb
 from app.handlers import card_mode_start
 from app.requests import send_request
-from app.services import check_current_state, display_message_and_redirect, generate_deck_list, clear_current_state, \
+from app.middlewares.locales import i18n
+from app.services import check_current_state, display_message_and_redirect, create_deck_info, clear_current_state, \
     DeckViewingState, DeckRename, DeckDelete, DeckCreate
+from app.services.states import ServerError
 from bot import bot
 from settings import BASE_URL
 
+_ = i18n.gettext
 router = Router()
 
 
@@ -29,7 +32,8 @@ async def decks_list(message: Message, state: FSMContext, caller=None):
     tg_id = state.key.user_id if state else message.from_user.id
     get_decks_url = f'{BASE_URL}/deck/api/v1/manage/{tg_id}/'
     response = await send_request(get_decks_url)
-    if response.get('status') // 100 == 2:
+    status = response.get('status')
+    if status == 200:
         await state.set_state(DeckViewingState.active)
         text = 'Choose a deck from the list below:'
         params = {
@@ -39,14 +43,30 @@ async def decks_list(message: Message, state: FSMContext, caller=None):
         if caller == 'from back btn':
             await message.edit_text(text, **params)
         else:
-            await message.answer(f'🗃 *{f"__Decks__":^50}* 🗃', parse_mode=ParseMode.MARKDOWN_V2,
-                                 reply_markup=kb.refresh_session)
+            deck_title = i18n.gettext('decks')
+            await message.answer(f'📂 *{f"__{deck_title}__":^50}* 📂', parse_mode=ParseMode.MARKDOWN_V2,
+                                 reply_markup=kb.studying_start)
             await message.answer(text, **params)
 
         # await message.answer(text, parse_mode=ParseMode.MARKDOWN_V2,
         #                      reply_markup=await kb.deck_names(response.get('data')))
+    elif status == 204:
+        deck_title = i18n.gettext('decks')
+        await message.answer(f'🗃 *{f"__{deck_title}__":^50}* 🗃', parse_mode=ParseMode.MARKDOWN_V2,
+                             reply_markup=kb.studying_start)
+        text = 'Decks is empty. Please, create a new deck.'
+        await message.answer(text, reply_markup=await kb.create_new_deck())
     else:
-        await message.answer('Something went wrong. Please press REFRESH button.', reply_markup=kb.refresh_session)
+        current_state = await state.get_state()
+        if current_state == 'ServerError:active':
+            text = ("🤯🥳 An error occurred "
+                    "\nIf this issue continues, please contact us through our help center at ankichat.com.")
+        else:
+            text = \
+                '🤯🥳 Oops, something went wrong.\nPlease press the REFRESH button or try again later.'
+
+        await message.answer(text, reply_markup=kb.studying_start)
+        await state.set_state(ServerError.active)
 
 
 @router.callback_query(F.data.startswith('deck_details_'))
@@ -61,7 +81,7 @@ async def deck_details(callback_or_message: CallbackQuery or Message, state: FSM
     response = await send_request(url)
     if response.get('status') == 200:
         data = response.get('data')
-        text = await generate_deck_list(data)
+        text = await create_deck_info(data)
         await message.edit_text(text, parse_mode=ParseMode.MARKDOWN_V2,
                                         reply_markup=await kb.manage_deck(data))
 
@@ -96,12 +116,18 @@ async def back_to_decks_btn(callback: CallbackQuery, state: FSMContext):
     await callback.answer()
     await decks_list(callback.message, state, caller='from back btn')
 
+@router.callback_query(F.data.startswith('choose_study_format_'))
+async def choose_study_format(callback: CallbackQuery, state: FSMContext):
+    slug, study_mode = callback.data.split('_')[-2:]
+    text = _('study_format')
+    await callback.message.edit_text(text=text, reply_markup=await kb.choose_study_format(slug, study_mode))
 
 @router.callback_query(F.data.startswith('start_studying_'))
 async def launch_card_mode(callback: CallbackQuery, state: FSMContext):
-    slug, study_mode = callback.data.split('_')[-2:]
+    slug, study_mode, study_format = callback.data.split('_')[-3:]
+    await callback.answer()
     await state.clear()
-    await card_mode_start(callback.message, state, slug=slug, study_mode=study_mode)
+    await card_mode_start(callback.message, state, slug=slug, study_mode=study_mode, study_format=study_format)
 
 
 # @router.callback_query(F.data.startswith('manage_deck_'))
@@ -204,7 +230,14 @@ async def deck_delete(callback: CallbackQuery, state: FSMContext):
 #         await decks_list(message, state)
 
 @router.message(Command(commands=['newdeck']))
-async def deck_create(message: Message, state: FSMContext):
+@router.message(F.text == 'Create deck')
+@router.callback_query(F.data == 'deck_create')
+async def deck_create(callback_or_message: CallbackQuery or Message, state: FSMContext):
+    if isinstance(callback_or_message, CallbackQuery):
+        await callback_or_message.answer()
+        message = callback_or_message.message
+    else:
+        message = callback_or_message
     text = 'Enter new deck\'s name'
     await message.answer(text, reply_markup=await kb.back())
     await state.set_state(DeckCreate.name)

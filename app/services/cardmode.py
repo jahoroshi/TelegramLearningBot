@@ -19,14 +19,18 @@ def gen_output_text(card_data=None, front=None, extra_text=''):
 
 {emoji}   _*{front.ljust(20, ' ')}*_
 
+
+
 >*Answer*
 >🔥🔥 _*{back.center(35, ' ')}*_  
+
+
 
 
 {ratings_text}
 """
 
-    else:
+    elif front:
         front = re.escape(front)
         text = f"""
 
@@ -34,6 +38,12 @@ def gen_output_text(card_data=None, front=None, extra_text=''):
 
 >{re.escape(extra_text)}
 """
+
+    else:
+        text = f"""
+>{re.escape(extra_text)}
+"""
+
     return text if text else ("🤯🥳 Something went wrong. "
                               "If this issue persists please contact us through our help center at ankichat.com")
 

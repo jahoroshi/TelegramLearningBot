@@ -3,7 +3,7 @@ from .start import *
 from .deckhub import *
 from .cardmanage import *
 
-from .cardmode import router as cardmode_router
+from .cardmode import cardmode_router as cardmode_router
 from .start import router as start_router
 from .deckhub import router as deckhub_router
 from .cardmanage import router as cardmanage_router

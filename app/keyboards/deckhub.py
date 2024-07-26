@@ -1,12 +1,30 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from app.middlewares.locales import i18n
+_ = i18n.gettext
+
 
 
 async def deck_names(data):
     keyboard = InlineKeyboardBuilder()
+    rows = ()
     for deck in data:
         name = deck['name']
-        keyboard.add(InlineKeyboardButton(text=name, callback_data=f'deck_details_{deck["slug"]}'))
+        keyboard.add(InlineKeyboardButton(text=f'➲ {name}', callback_data=f'deck_details_{deck["slug"]}'))
+    # keyboard.add(InlineKeyboardButton(text=_('create_deck_ddn'), callback_data='deck_create'))
+    #
+    # match len(data):
+    #     case 1:
+    #         rows = (1, 1)
+    #     case 2:
+    #         rows = (2, 1)
+    #     case 3:
+    #         rows = (3, 1)
+    #     case n if n % 2 == 0:
+    #         rows = (2, 2)
+    #     case n if n % 3 == 0:
+    #         rows = (3, 1)
+
     return keyboard.adjust(3).as_markup()
 
 
@@ -32,11 +50,11 @@ async def manage_deck(deck):
     rows = [3, 2]
 
     if new_cards_count:
-        keyboard.add(InlineKeyboardButton(text='Study new', callback_data=f'start_studying_{slug}_new'))
-        rows = [1] + rows
+        keyboard.add(InlineKeyboardButton(text='Study new', callback_data=f'choose_study_format_{slug}_new'))
+        rows.insert(0, 1)
     if reviews_count:
-        keyboard.add(InlineKeyboardButton(text='Review cards', callback_data=f'start_studying_{slug}_review'))
-        rows = [1] + rows
+        keyboard.add(InlineKeyboardButton(text='Review cards', callback_data=f'choose_study_format_{slug}_review'))
+        rows.insert(0, 1)
     keyboard.add(InlineKeyboardButton(text='Show cards', callback_data=f'show_cards_{slug}'))
     keyboard.add(InlineKeyboardButton(text='Import cards', callback_data=f'import_cards_{slug}'))
     keyboard.add(InlineKeyboardButton(text='Add card', callback_data=f'add_card_{slug}'))
@@ -70,9 +88,6 @@ async def deckhub_manage_actions():
     keyword.add(InlineKeyboardButton(text='Delete deck', callback_data=f'deck_delete'))
 
 
-refresh_session = ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text='REFRESH')]],
-                                      input_field_placeholder='Press to button', resize_keyboard=True)
-
 
 async def back_to_decklist_or_deckdetails(slug):
     keyboard = InlineKeyboardBuilder()
@@ -80,5 +95,18 @@ async def back_to_decklist_or_deckdetails(slug):
     keyboard.add(InlineKeyboardButton(text='« Back to deck', callback_data=f'deck_details_{slug}'))
     return keyboard.as_markup()
 
+
 # is_two_sides = ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text='Yes'), KeyboardButton(text='No')]],
 #                                    one_time_keyboard=True)
+
+async def create_new_deck():
+    keyboard = InlineKeyboardBuilder()
+    keyboard.add(InlineKeyboardButton(text='Create new deck', callback_data=f'deck_create'))
+    return keyboard.as_markup()
+
+
+async def choose_study_format(slug, study_mode):
+    keyboard = InlineKeyboardBuilder()
+    keyboard.add(InlineKeyboardButton(text=_('study_format_text'), callback_data=f'start_studying_{slug}_{study_mode}_text'))
+    keyboard.add(InlineKeyboardButton(text=_('study_format_audio'), callback_data=f'start_studying_{slug}_{study_mode}_audio'))
+    return keyboard.adjust(2).as_markup()

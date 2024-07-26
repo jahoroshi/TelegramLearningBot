@@ -5,6 +5,9 @@ import aiohttp
 
 async def response_handler(response):
     if response.status // 100 == 2:
+        if response.status == 204:
+            return {'status': response.status, 'data': None}
+
         content_type = response.headers.get('Content-Type')
         if content_type and content_type.startswith('audio'):
             data = await response.read()
@@ -12,6 +15,7 @@ async def response_handler(response):
             data = await response.json()
         else:
             data = await response.text()
+
         return {'status': response.status, 'data': data}
     else:
         logging.error(f'!Error: {response.status}')
@@ -39,27 +43,12 @@ async def send_request(url, method='GET', data=None):
                     return await response_handler(response)
 
     except aiohttp.ClientError as e:
-        text = f'Error in {__name__}\nClient Error: {e}\nUrl: {url}'
+        text = f'>> aiohttp.ClientError in {__name__}\n>> Client Error: {e}\n>> Url: {url}'
         logging.error(text)
-        return {'error_detail': text}
+        print(text)
+        return {'status': 'error', 'error_detail': text}
     except Exception as e:
-        text = f'Error in {__name__}\nClient Error: {e}\nUrl: {url}'
+        text = f'>> General Error in {__name__}\n>> Client Error: {e}\n>> Url: {url}'
         logging.error(text)
-        return {'error_detail': text}
+        return {'status': 'error', 'error_detail': text}
 
-# async def set_data(url, data):
-#     try:
-#         async with aiohttp.ClientSession() as session:
-#             async with session.post(url, json=data) as response:
-#                 if response.status == 200:
-#                     response_data = await response.json()
-#                     return response_data
-#                 else:
-#                     print(f'Error: {response.status}')
-#                     return None
-#     except aiohttp.ClientError as e:
-#         print(f'Client Error: {e}')
-#         return None
-#     except Exception as e:
-#         print(f'Error: {e}')
-#         return None

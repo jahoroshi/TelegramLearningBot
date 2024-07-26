@@ -27,7 +27,7 @@ async def main():
     # menu_button = types.MenuButtonCommands(commands=user_commands)
     # res = await bot(SetChatMenuButton(menu_button=menu_button))
     # logging.info(res)
-
+    # dp.middleware.setup(i18n_middleware.I18nMiddleware(i18n))
     await dp.start_polling(bot)
 
 

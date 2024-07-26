@@ -37,7 +37,7 @@ async def generate_deck_list_text(deck):
 
 
 
-async def generate_deck_list(deck):
+async def create_deck_info(deck):
     cards_count = deck.get('cards_count')
     new_cards_count = deck.get('new_cards_count')
     reviews_count = deck.get('reviews_count')

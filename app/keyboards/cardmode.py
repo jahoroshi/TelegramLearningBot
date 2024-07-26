@@ -3,36 +3,10 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from app.database.requests import get_categories, get_category_item
 
-# main = ReplyKeyboardMarkup(keyboard=[
-#     [KeyboardButton(text='Каталог')],
-#     [KeyboardButton(text='Корзина'), KeyboardButton(text='Контакты')]
-# ],
-#     resize_keyboard=True,
-#     input_field_placeholder='Выбрать пункт меню.')
-
-# main = InlineKeyboardMarkup(inline_keyboard=[
-#     [InlineKeyboardButton(text='Каталог', callback_data='catalog')],
-#     [InlineKeyboardButton(text='Корзина', callback_data='basket')],
-#     [InlineKeyboardButton(text='Контакты', callback_data='contacts')]
-# ],
-#     resize_keyboard=True,
-# input_field_placeholder='Выберите пункт!!!')
-
-studying_start = ReplyKeyboardMarkup(
-    keyboard=[[KeyboardButton(text='Start studying')], [KeyboardButton(text='Test asyncio')],
-              [KeyboardButton(text='Decks')]],
-    input_field_placeholder='Press to Start Studying', resize_keyboard=True)
-
-mem_ratings22 = ReplyKeyboardMarkup(keyboard=[
-    [KeyboardButton(text='Again'), KeyboardButton(text='Good'),
-     KeyboardButton(text='Hard'), KeyboardButton(text='Easy')]
-],
-    resize_keyboard=True,
-    input_field_placeholder='Select the recall level')
 
 
 async def mem_ratings(ratings_count=None):
-    rating_names = {1: 'Again', 2: 'Good', 3: 'Hard', 4: 'Easy'}
+    rating_names = {1: 'Again', 2: 'Hard', 3: 'Good', 4: 'Easy'}
     keyboard = []
     for key, value in rating_names.items():
         if ratings_count:
@@ -45,8 +19,9 @@ async def mem_ratings(ratings_count=None):
     return a
 
 
-async def card_mode_buttons(buttons, update_names=None, order_scheme=None):
+async def card_mode_buttons(buttons, update_names=None, order_scheme=None, is_first_show=None):
     keyboard = InlineKeyboardBuilder()
+    rows = (1, 2, 2, 2)
     button_names = {
         'show_back': 'Show back',
         'show_hint': 'Ask for hint',
@@ -63,7 +38,13 @@ async def card_mode_buttons(buttons, update_names=None, order_scheme=None):
         if status:
             keyboard.add(InlineKeyboardButton(text=button_names.get(name, name), callback_data=f'button_{name}'))
     keyboard.add(InlineKeyboardButton(text='Finish Training', callback_data='to_decks_list'))
-    return keyboard.adjust(1, 2, 2, 2, repeat=True).as_markup()
+    if is_first_show:
+        keyboard.add(InlineKeyboardButton(text='Already known', callback_data='card_is_already_known'))
+        rows = (1, 2, 2, 2, 1)
+
+    # if buttons.get('speech') is False:
+    #     rows = (1, 2, 2, 1, 1)
+    return keyboard.adjust(*rows, repeat=True).as_markup()
 
 
 async def similar_words_output(words):
