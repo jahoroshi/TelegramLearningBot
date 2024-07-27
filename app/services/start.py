@@ -1,6 +1,3 @@
-from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery
-
 from app.requests import send_request
 from settings import BASE_URL
 

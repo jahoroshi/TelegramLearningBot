@@ -5,3 +5,4 @@ from .utils import *
 from .states import *
 from .locales import *
 from .start import *
+from .middleware import *

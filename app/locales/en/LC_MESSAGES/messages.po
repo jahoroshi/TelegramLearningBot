@@ -15,10 +15,10 @@ msgid "create_deck_ddn"
 msgstr "Create new deck"
 
 msgid "study_format_en"
-msgstr "How would you like to study the cards: by listening to the voice or by reading the text?"
+msgstr "How would you like to study the cards: by listening to the audio or by reading the text?"
 
 msgid "study_format_audio_en"
-msgstr "Listen to Voice"
+msgstr "Audio"
 
 msgid "study_format_text_en"
-msgstr "Read Text"
+msgstr "Text"

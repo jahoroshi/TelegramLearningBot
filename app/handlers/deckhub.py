@@ -14,8 +14,8 @@ from app.handlers import card_mode_start
 from app.requests import send_request
 from app.middlewares.locales import i18n
 from app.services import check_current_state, display_message_and_redirect, create_deck_info, clear_current_state, \
-    DeckViewingState, DeckRename, DeckDelete, DeckCreate
-from app.services.states import ServerError
+    DeckViewingState, DeckRename, DeckDelete, DeckCreate, delete_two_messages
+from app.services.states import ServerError, ResetDeckProgress
 from bot import bot
 from settings import BASE_URL
 
@@ -198,7 +198,7 @@ async def deck_delete(callback: CallbackQuery, state: FSMContext):
         response = await send_request(url, method='DELETE')
         if response.get('status') == 204:
             text = '🧨 Deck was successfully deleted.'
-            await callback.message.delete()
+            await delete_two_messages(callback)
         else:
             text = 'Something went wrong.'
             await callback.message.delete_reply_markup()
@@ -260,27 +260,35 @@ async def deck_create_handler(message: Message, state: FSMContext):
         text = 'Something went wrong.'
     await display_message_and_redirect(message, state, text)
 
+@router.callback_query(F.data.startswith('manage_deck_edit_del_'))
+async def manage_deck_edit_del(callback: CallbackQuery, state: FSMContext):
+    slug = callback.data.split('_')[-1]
+    await callback.message.edit_reply_markup(reply_markup=await kb.manage_deck_edit_del(slug))
 
-@router.message(F.text == 'b')
-async def send_welcome(message: types.Message):
-    user_commands = [
-        BotCommand(command='for', description='Описание команды /for'),
-        BotCommand(command='for2', description='Описание команды /for2'),
-        BotCommand(command='magik', description='Описание команды /magik'),
-        BotCommand(command='magik22', description='Описание команды /magik'),
-        BotCommand(command='magik2ww2', description='Описание команды /magik'),
-    ]
 
-    # Предполагаем, что у вас используется aiogram
-    menu_button = MenuButtonCommands(commands=user_commands)
+@router.callback_query(F.data.startswith('reset_progress_'))
+async def reset_deck_progress_confirm(callback: CallbackQuery, state: FSMContext):
+    slug = callback.data.split('_')[-1]
+    await state.set_state(ResetDeckProgress.active)
+    text = '♻️ Resetting your progress will clear all your study data and return all cards in this deck to their initial state.\nCards will not be removed from the deck.\nResetting only affects the current deck.\n\n❓ Do you want to proceed?'
+    await callback.message.edit_text(text, reply_markup=await kb.reset_deck_progress(slug))
 
-    res = await bot.set_my_commands(user_commands, scope=BotCommandScopeChat(chat_id=message.chat.id))
-    # await bot(SetChatMenuButton(menu_button=menu_button))
-
-# @router.message(F.text == 'a')
-# async def send_welcome(message: types.Message):
-#
-#     web_app_info = types.WebAppInfo(url="https://chatgpt.com/")
-#     menu_button = types.MenuButtonWebApp(text="Open Web App", web_app=web_app_info)
-#     await bot.set_chat_menu_button(chat_id=message.chat.id, menu_button=menu_button)
-#     await message.answer("Web app menu button has been set.")
+@router.callback_query(F.data.startswith('reset_deck_confirm_'))
+async def reset_deck_progress_handler(callback: CallbackQuery, state: FSMContext):
+    current_state = await state.get_state()
+    if current_state == ResetDeckProgress.active:
+        slug = callback.data.split('_')[-1]
+        telegram_id = state.key.user_id
+        url = f'{BASE_URL}/deck/api/v1/manage/reset/{telegram_id}/{slug}/'
+        response = await send_request(url, method='GET')
+        if response.get('status') == 200:
+            text = '♻️ Deck was successfully reset. ♻️\n_'
+        elif response.get('status') == 204:
+            text = 'Deck is empty.'
+        else:
+            text = 'Something went wrong.'
+        await callback.message.delete_reply_markup()
+        await state.set_state(DeckViewingState.active)
+        await callback.message.answer(text, reply_markup=kb.studying_start)
+        await asyncio.sleep(2)
+    await decks_list(callback.message, state)

@@ -8,10 +8,12 @@ from aiogram.types import CallbackQuery
 from aiogram.types import Message
 
 import app.keyboards as kb
-from app.middlewares.locales import i18n
+from app.middlewares.locales import i18n, i18n_middleware
 
 from app.requests import send_request
 from app.services import set_user_commands, set_initial_user_language
+from app.services.middleware import set_tips_middleware
+from bot import dp
 from settings import BASE_URL
 
 router = Router()
@@ -19,12 +21,17 @@ _ = i18n.gettext
 
 @router.message(CommandStart())
 @router.callback_query(F.data == 'to_main')
-@router.message(F.text == 'REFRESH')
 async def cmd_start(callback_or_message: Message or CallbackQuery, state: FSMContext):
     message = callback_or_message.message if isinstance(callback_or_message, CallbackQuery) else callback_or_message
     await set_user_commands(message)
     from app.handlers import decks_list
     await decks_list(message, state)
+
+@router.message(F.text == 'REFRESH')
+async def cmd_refresh(message: Message, state: FSMContext):
+    has_language = await i18n_middleware.process_event(message, state)
+    if has_language:
+        await cmd_start(message, state)
 
 
 async def choose_initial_language(message: Message):
@@ -55,24 +62,10 @@ async def handle_initial_user_language(callback: CallbackQuery, state: FSMContex
             response = await send_request(url, method='GET')
             if response and response.get('status') == 201:
                 text = _('greeting_after_creating_test_deck')
+                await set_tips_middleware()
                 await callback.message.answer(text)
                 await asyncio.sleep(2)
 
         from app.handlers import decks_list
         await decks_list(callback.message, state)
 
-
-# @router.message(Command('q'))
-# async def sandbox(message: Message, state: FSMContext):
-#     i18n_middleware.set_locale('ru')
-#
-#     a = i18n.gettext('greeting')
-#     await message.reply(a)
-#
-#
-# @router.message(Command('qq'))
-# async def sandbox(message: Message, state: FSMContext):
-#     i18n_middleware.set_locale('en')
-#
-#     a = i18n.gettext('greeting')
-#     await message.reply(a)

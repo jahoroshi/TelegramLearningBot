@@ -18,8 +18,8 @@ router = Router()
 async def set_rating(message: Message, state: FSMContext, data_store: dict = None, rating=None):
     if rating is None:
         ratings = {'Again': 1,
-                   'Good': 2,
-                   'Hard': 3,
+                   'Hard': 2,
+                   'Good': 3,
                    'Easy': 4,
                    }
         text = message.text

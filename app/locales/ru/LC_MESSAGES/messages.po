@@ -15,8 +15,8 @@ msgid "study_format"
 msgstr "Как Вы предпочитаете учить карточки: слушая голос или читая текст?"
 
 msgid "study_format_audio"
-msgstr "Слушать голос"
+msgstr "Голос"
 
 msgid "study_format_text"
-msgstr "Читать текст"
+msgstr "Текст"
 

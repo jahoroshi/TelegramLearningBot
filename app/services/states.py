@@ -44,3 +44,6 @@ class CardMode(StatesGroup):
 
 class ServerError(StatesGroup):
     active = State()
+
+class ResetDeckProgress(StatesGroup):
+    active = State()

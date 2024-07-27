@@ -15,3 +15,5 @@ class TestMiddleware(BaseMiddleware):
         result = await handler(event, data)
         # print('Действие после обработчика')
         return result
+
+

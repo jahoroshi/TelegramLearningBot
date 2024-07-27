@@ -16,7 +16,9 @@ async def display_message_and_redirect(message: Message, state: FSMContext, text
 async def set_user_commands(message: Message):
     user_commands = [
         BotCommand(command='newdeck', description='Create a new deck'),
-        BotCommand(command='start', description='Go to the start menu'),
+        BotCommand(command='refresh', description='Refresh the bot'),
+        BotCommand(command='settings', description='Manage account settings'),
+        BotCommand(command='help', description='Get help information'),
     ]
 
     menu_button = MenuButtonCommands(commands=user_commands)

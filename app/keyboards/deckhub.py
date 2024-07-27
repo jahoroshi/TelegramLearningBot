@@ -58,10 +58,25 @@ async def manage_deck(deck):
     keyboard.add(InlineKeyboardButton(text='Show cards', callback_data=f'show_cards_{slug}'))
     keyboard.add(InlineKeyboardButton(text='Import cards', callback_data=f'import_cards_{slug}'))
     keyboard.add(InlineKeyboardButton(text='Add card', callback_data=f'add_card_{slug}'))
-    keyboard.add(InlineKeyboardButton(text='✎ Rename deck', callback_data=f'rename_deck_{slug}'))
-    keyboard.add(InlineKeyboardButton(text='× Delete deck', callback_data=f'delete_deck_{slug}'))
+    keyboard.add(InlineKeyboardButton(text='Deck manage', callback_data=f'manage_deck_edit_del_{slug}'))
     keyboard.add(InlineKeyboardButton(text='« Back to decks', callback_data=f'back_to_decks'))
     return keyboard.adjust(*rows).as_markup()
+
+async def manage_deck_edit_del(slug):
+    keyboard = InlineKeyboardBuilder()
+    keyboard.add(InlineKeyboardButton(text='✎ Rename deck', callback_data=f'rename_deck_{slug}'))
+    keyboard.add(InlineKeyboardButton(text='× Delete deck', callback_data=f'delete_deck_{slug}'))
+    keyboard.add(InlineKeyboardButton(text='Reset Progress', callback_data=f'reset_progress_{slug}'))
+    keyboard.add(InlineKeyboardButton(text='« Back to decks list', callback_data='back_to_decks'))
+    keyboard.add(InlineKeyboardButton(text='« Back to deck', callback_data=f'deck_details_{slug}'))
+    return keyboard.adjust(2, 1, 2).as_markup()
+
+async def reset_deck_progress(slug):
+    keyboard = InlineKeyboardBuilder()
+    keyboard.add(InlineKeyboardButton(text='Reset', callback_data=f'reset_deck_confirm_{slug}'))
+    keyboard.add(InlineKeyboardButton(text='« Back to deck manage', callback_data=f'manage_deck_edit_del_{slug}'))
+    return keyboard.adjust(2).as_markup()
+
 
 
 async def back():

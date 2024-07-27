@@ -1,8 +1,11 @@
 import asyncio
-import random
 import re
-import humanize
 from datetime import datetime
+
+from aiogram.types import CallbackQuery
+
+from bot import bot
+
 
 async def data_handler(data):
     days = data.days
@@ -36,7 +39,6 @@ async def generate_deck_list_text(deck):
     return text
 
 
-
 async def create_deck_info(deck):
     cards_count = deck.get('cards_count')
     new_cards_count = deck.get('new_cards_count')
@@ -56,3 +58,13 @@ async def create_deck_info(deck):
 >{re.escape(next_review_date) if next_review_date else ''}
             '''
     return text
+
+
+async def delete_two_messages(callback: CallbackQuery):
+    message_id = callback.message.message_id
+    chat_id = callback.message.chat.id
+    await bot.delete_message(chat_id=chat_id, message_id=message_id - 1)
+    # await asyncio.sleep(1)
+    # await callback.message.delete()
+    # await asyncio.sleep(0.5)
+
