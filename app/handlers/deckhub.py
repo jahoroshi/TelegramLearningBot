@@ -7,10 +7,10 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import Message, CallbackQuery, BotCommand, MenuButtonCommands, \
-    BotCommandScopeChat
+    BotCommandScopeChat, ReplyKeyboardRemove
 
 import app.keyboards as kb
-from app.handlers import card_mode_start
+from app.handlers.cardmode.cardmode_start import card_mode_start
 from app.requests import send_request
 from app.middlewares.locales import i18n
 from app.services import check_current_state, display_message_and_redirect, create_deck_info, clear_current_state, \
@@ -45,7 +45,7 @@ async def decks_list(message: Message, state: FSMContext, caller=None):
         else:
             deck_title = i18n.gettext('decks')
             await message.answer(f'📂 *{f"__{deck_title}__":^50}* 📂', parse_mode=ParseMode.MARKDOWN_V2,
-                                 reply_markup=kb.studying_start)
+                                 reply_markup=kb.main_button)
             await message.answer(text, **params)
 
         # await message.answer(text, parse_mode=ParseMode.MARKDOWN_V2,
@@ -53,7 +53,7 @@ async def decks_list(message: Message, state: FSMContext, caller=None):
     elif status == 204:
         deck_title = i18n.gettext('decks')
         await message.answer(f'🗃 *{f"__{deck_title}__":^50}* 🗃', parse_mode=ParseMode.MARKDOWN_V2,
-                             reply_markup=kb.studying_start)
+                             reply_markup=kb.create_new_deck_button)
         text = 'Decks is empty. Please, create a new deck.'
         await message.answer(text, reply_markup=await kb.create_new_deck())
     else:
@@ -65,7 +65,7 @@ async def decks_list(message: Message, state: FSMContext, caller=None):
             text = \
                 '🤯🥳 Oops, something went wrong.\nPlease press the REFRESH button or try again later.'
 
-        await message.answer(text, reply_markup=kb.studying_start)
+        await message.answer(text, reply_markup=kb.refresh_button)
         await state.set_state(ServerError.active)
 
 
@@ -117,10 +117,24 @@ async def back_to_decks_btn(callback: CallbackQuery, state: FSMContext):
     await decks_list(callback.message, state, caller='from back btn')
 
 @router.callback_query(F.data.startswith('choose_study_format_'))
-async def choose_study_format(callback: CallbackQuery, state: FSMContext):
-    slug, study_mode = callback.data.split('_')[-2:]
+@router.message(F.text == 'Study all decks')
+async def choose_study_format(callback_or_message: CallbackQuery or Message, state: FSMContext):
     text = _('study_format')
-    await callback.message.edit_text(text=text, reply_markup=await kb.choose_study_format(slug, study_mode))
+    if isinstance(callback_or_message, CallbackQuery):
+        slug, study_mode = callback_or_message.data.split('_')[-2:]
+        message = callback_or_message.message
+        await message.edit_text(text=text, reply_markup=await kb.choose_study_format(slug, study_mode))
+
+    else:
+        message = callback_or_message
+        slug = 'alldecks'
+        telegram_id = state.key.user_id
+        study_mode = f'new-{telegram_id}-all' if message.text == 'Study all decks' else f'review-{telegram_id}-all'
+
+        await message.answer(text=text, reply_markup=await kb.choose_study_format(slug, study_mode))
+
+
+
 
 @router.callback_query(F.data.startswith('start_studying_'))
 async def launch_card_mode(callback: CallbackQuery, state: FSMContext):
@@ -128,13 +142,6 @@ async def launch_card_mode(callback: CallbackQuery, state: FSMContext):
     await callback.answer()
     await state.clear()
     await card_mode_start(callback.message, state, slug=slug, study_mode=study_mode, study_format=study_format)
-
-
-# @router.callback_query(F.data.startswith('manage_deck_'))
-# @check_current_state
-# async def manage_deck(callback: CallbackQuery, state: FSMContext):
-#     slug = callback.data.split('_')[-1]
-#     await callback.message.edit_reply_markup(reply_markup=await kb.manage_deck(slug))
 
 
 @router.callback_query(F.data.startswith('rename_deck_'))
@@ -203,7 +210,7 @@ async def deck_delete(callback: CallbackQuery, state: FSMContext):
             text = 'Something went wrong.'
             await callback.message.delete_reply_markup()
         await state.set_state(DeckViewingState.active)
-        await callback.message.answer(text, reply_markup=kb.studying_start)
+        await callback.message.answer(text, reply_markup=kb.refresh_button)
         await asyncio.sleep(1.5)
     await decks_list(callback.message, state)
 
@@ -289,6 +296,6 @@ async def reset_deck_progress_handler(callback: CallbackQuery, state: FSMContext
             text = 'Something went wrong.'
         await callback.message.delete_reply_markup()
         await state.set_state(DeckViewingState.active)
-        await callback.message.answer(text, reply_markup=kb.studying_start)
+        await callback.message.answer(text, reply_markup=kb.refresh_button)
         await asyncio.sleep(2)
     await decks_list(callback.message, state)

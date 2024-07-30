@@ -125,3 +125,18 @@ async def choose_study_format(slug, study_mode):
     keyboard.add(InlineKeyboardButton(text=_('study_format_text'), callback_data=f'start_studying_{slug}_{study_mode}_text'))
     keyboard.add(InlineKeyboardButton(text=_('study_format_audio'), callback_data=f'start_studying_{slug}_{study_mode}_audio'))
     return keyboard.adjust(2).as_markup()
+
+
+refresh_button = ReplyKeyboardMarkup(
+    keyboard=[[KeyboardButton(text='REFRESH')]],
+    input_field_placeholder='Press to Start Studying', resize_keyboard=True)
+
+
+create_new_deck_button = ReplyKeyboardMarkup(
+    keyboard=[[KeyboardButton(text='Create deck')]],
+    input_field_placeholder='Press to Start Studying', resize_keyboard=True)
+
+
+main_button = ReplyKeyboardMarkup(
+    keyboard=[[KeyboardButton(text='Study all decks')]],
+    input_field_placeholder='Press to Start Studying', resize_keyboard=True)

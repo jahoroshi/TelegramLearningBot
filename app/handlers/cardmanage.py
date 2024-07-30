@@ -220,7 +220,7 @@ async def card_update_create_enter_sides(message: Message, state: FSMContext):
     elif not any(char.isalnum() for char in side):
         text = '⛔️ Side must contain one letter or one number.'
     if 'text' in locals():
-        await message.answer(text, reply_markup=kb.studying_start)
+        await message.answer(text, reply_markup=kb.refresh_button)
         await asyncio.sleep(1.5)
         await decks_list(message, state)
         print('Mistake', time.time() - start_time)

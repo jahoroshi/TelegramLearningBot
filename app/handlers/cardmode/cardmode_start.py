@@ -202,8 +202,8 @@ async def handle_audio_format(start_config, card_data, message, msg_params, text
         text = gen_output_text(extra_text=text_hint)
 
         file = BufferedInputFile(sound, filename='Play')
-        await message.answer_voice(file)
-        await message.answer(text, **msg_params)
+        await message.answer_voice(file, **msg_params)
+        # await message.answer(text, **msg_params)
     else:
         front_side = card_data.get("front_side", '')
         text = gen_output_text(front=front_side, extra_text=text_hint)

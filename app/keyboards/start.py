@@ -11,7 +11,3 @@ async def choose_language(language):
     return keyboard.adjust(1).as_markup()
 
 
-studying_start = ReplyKeyboardMarkup(
-    keyboard=[[KeyboardButton(text='Create deck')],
-              [KeyboardButton(text='REFRESH')]],
-    input_field_placeholder='Press to Start Studying', resize_keyboard=True)
