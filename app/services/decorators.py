@@ -4,12 +4,9 @@ from aiogram import Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-
-
 # from app.middlewares import TestMiddleware
 
 router = Router()
-
 
 
 def check_current_state(func):
@@ -17,13 +14,29 @@ def check_current_state(func):
     async def wrapper(*args, **kwargs):
         state = kwargs.get('state')
         current_state = await state.get_state()
-        if current_state in ('DeckViewingState:active', 'CardManage:card_ops_state', 'CardManage:is_two_sides'):
+        func_name = func.__name__
+        permissions = {
+            'card_update_create_handler': (
+                'CardManage:is_two_sides',
+                'CardManage:addcard_slug'
+            ),
+            'global': (
+                'DeckViewingState:active',
+                'CardManage:card_ops_state'
+            )
+        }
+        if permissions.get(func_name):
+            if current_state in permissions[func_name]:
+                return await func(*args, **kwargs)
+            else:
+                from app.handlers import to_decks_list
+                return await to_decks_list(*args, **kwargs)
+
+        if current_state in permissions['global']:
             return await func(*args, **kwargs)
-        else:
-            print(current_state)
-            print(kwargs)
-            from app.handlers import to_decks_list
-            return await to_decks_list(*args, **kwargs)
+
+        from app.handlers import to_decks_list
+        return await to_decks_list(*args, **kwargs)
 
     return wrapper
 
@@ -38,6 +51,7 @@ def clear_current_state(func):
             from app.services import DeckViewingState
             await state.set_state(DeckViewingState.active)
         return await func(*args, **kwargs)
+
     return wrapper
 
 

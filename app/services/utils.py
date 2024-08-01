@@ -15,6 +15,7 @@ async def display_message_and_redirect(message: Message, state: FSMContext, text
 
 async def set_user_commands(message: Message):
     user_commands = [
+        BotCommand(command='addcard', description='Add card quick'),
         BotCommand(command='newdeck', description='Create a new deck'),
         BotCommand(command='refresh', description='Refresh the bot'),
         BotCommand(command='settings', description='Manage account settings'),

@@ -1,66 +1,36 @@
 import asyncio
-import time
 from itertools import chain
 
 from aiogram import F, Router
 from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, ReplyKeyboardRemove
+from aiogram.filters import Command
+
 
 import app.keyboards as kb
 from app.handlers import decks_list
 from app.requests import send_request
-from app.services import check_current_state, display_message_and_redirect, ImportCards, CardManage
+from app.services import check_current_state, display_message_and_redirect, CardManage, QuickAddCard, get_decks_data
 from settings import BASE_URL
 
 router = Router()
+router_quick_card_create = Router()
 
 
-@router.callback_query(F.data.startswith('import_cards_'))
-@check_current_state
-async def import_cards(callback: CallbackQuery, state: FSMContext):
-    await callback.answer()
-    await state.set_state(ImportCards.data)
-    slug = callback.data.split('_')[-1]
-    await state.update_data(slug=slug)
-    await callback.message.edit_text(
-        f'''🔔 *Import instruction:*
-» Max lenght message 4096 chars\.\n
-» Use semicolon * \; * as separator between sides\n
-» Each card must be on a new line\.
+@router_quick_card_create.message()
+async def quick_card_create_begin(message: Message, state: FSMContext):
+    side1 = message.text
+    if 2 <= len(side1) <= 255 and any(char.isalpha() for char in side1):
+        await state.set_state(CardManage.back_side)
+        await state.update_data(card_ops_state='create', front_side=side1)
 
-*Example\:*
->\(_front side_\) *\;* \(_back side_\)
->{f"Apple":^14} *\;* {f"Яблоко":^11}
->{f"Orange":^12} *\;* {f"Апельсин":^11}
-
-_enter text or press back for cansel_
-''', parse_mode=ParseMode.MARKDOWN_V2, reply_markup=await kb.back_to_decklist_or_deckdetails(slug))
-
-
-@router.message(ImportCards.data)
-async def import_cards_handler(message: Message, state: FSMContext):
-    cards = message.text
-    data = await state.get_data()
-    slug = data.get('slug')
-    cards_data = {
-        'text': cards,
-        'cards_separator': 'new_line',
-        'words_separator': 'semicolon',
-        'words_separator_custom': '',
-        'cards_separator_custom': '',
-    }
-    url = f'{BASE_URL}/cards/api/v1/import_cards/{slug}/'
-    response = await send_request(url, method='POST', data=cards_data)
-    status = response.get('status')
-    if status == 201:
-        text = response.get('data', {}).get('detail')
-    else:
-        text = '❗️ Something went wrong.'
-    await message.answer(text, reply_markup=await kb.back_to_decklist_or_deckdetails(slug))
-    # await asyncio.sleep(1)
-    # await decks_list(message, state)
-
+@router.message(Command(commands=['addcard']))
+async def command_card_create_begin(message: Message, state: FSMContext):
+    await state.set_state(CardManage.front_side)
+    await state.update_data(card_ops_state='create')
+    await message.answer('☝️ Enter front side\n>Or press *back* for cansel',
+                                  parse_mode=ParseMode.MARKDOWN_V2)
 
 @router.callback_query(F.data.startswith('add_card_'))
 @check_current_state
@@ -70,52 +40,8 @@ async def card_create_begin(callback: CallbackQuery, state: FSMContext):
     await state.update_data(card_ops_state='create')
     await state.update_data(slug=slug)
     await callback.message.edit_reply_markup(reply_markup=await kb.back_to_decklist_or_deckdetails(slug))
-    await callback.message.answer('☝️ Enter front side\n>Or press    *back*   for cansel',
-                                  parse_mode=ParseMode.MARKDOWN_V2, reply_markup=ReplyKeyboardRemove())
-
-
-@router.callback_query(F.data.startswith('show_cards_'))
-@check_current_state
-async def show_cards(callback: CallbackQuery, state: FSMContext):
-    await callback.answer()
-    slug = callback.data.split('_')[-1]
-    tg_id = state.key.user_id
-    url = f'{BASE_URL}/deck/api/v1/manage/{tg_id}/{slug}/'
-    response = await send_request(url, method='GET')
-    status = response.get('status')
-    if status == 200:
-        data = response.get('data', {})
-        cards_list = ''
-        card_id_to_row_number = {}
-        cur_row_number = 1
-        cards_id_index = {}
-        data.sort(key=lambda x: x['card_id'])
-        for card in data:
-            card_id = card['card_id']
-            if card_id not in card_id_to_row_number:
-                cards_list += f'» {cur_row_number}. {card.get("side1")}  |  {card.get("side2")}\n'
-                card_id_to_row_number[card_id] = cur_row_number
-                cards_id_index[cur_row_number] = card_id
-                cur_row_number += 1
-            else:
-                cards_list += f'» {card_id_to_row_number[card_id]}. {card.get("side1")}  |  {card.get("side2")}\n'
-                cards_id_index[card_id_to_row_number[card_id]] = card_id
-        # for index, card in enumerate(data, 1):
-        #     cards_id_index[index] = card.get('id')
-        #     cards_list += f'» {index}. {card.get("side1")} ¦ {card.get("side2")}\n'
-        if len(cards_list) != 0:
-            await callback.message.edit_text(cards_list, reply_markup=await kb.show_cards_action_buttons(slug))
-            await state.set_state(CardManage.card_ops_state)
-            await state.update_data(cards_id_index=cards_id_index, slug=slug)
-        else:
-            await callback.message.edit_text('📂 The deck is empty.',
-                                             reply_markup=await kb.back_to_decklist_or_deckdetails(slug))
-
-    else:
-        text = '❗️ Something went wrong.'
-        await callback.message.answer(text, reply_markup=ReplyKeyboardRemove())
-        await asyncio.sleep(1.5)
-        await decks_list(callback.message, state)
+    await callback.message.answer('☝️ Enter front side\n>Or press *back* for cansel',
+                                  parse_mode=ParseMode.MARKDOWN_V2)
 
 
 @router.callback_query(F.data == 'edit_card')
@@ -129,7 +55,7 @@ async def card_update_delete_begin(callback: CallbackQuery, state: FSMContext):
         text = '🔢 Enter one card number or several cards numbers from the list:'
     await callback.answer()
     await state.set_state(CardManage.upd_list_index if callback.data == 'edit_card' else CardManage.del_list_index)
-    await callback.message.answer(text, reply_markup=ReplyKeyboardRemove())
+    await callback.message.answer(text)
 
 
 async def delete_cards(card_id, slug):
@@ -178,7 +104,6 @@ async def card_delete_getting_id(message: Message, state: FSMContext):
     else:
         text = f'❗️ Something went wrong.'
     await message.answer(text, reply_markup=await kb.back_to_decklist_or_deckdetails(slug))
-    # await display_message_and_redirect(message, state, text)
 
 
 @router.message(CardManage.upd_list_index)
@@ -186,7 +111,7 @@ async def card_update_getting_id(message: Message, state: FSMContext):
     index = message.text
 
     if not index.isdigit():
-        text = '️️❕️ Index must be an integer. Try again.'
+        text = '️️❕️ Index must be an digit. Try again.'
         return await display_message_and_redirect(message, state, text)
 
     index = int(index)
@@ -208,13 +133,7 @@ async def card_update_getting_id(message: Message, state: FSMContext):
     await message.answer('☝️ Enter front side:')
 
 
-@router.message(CardManage.front_side)
-@router.message(CardManage.back_side)
-async def card_update_create_enter_sides(message: Message, state: FSMContext):
-    start_time = time.time()
-
-    side = message.text.strip()
-
+async def check_sides_input(message: Message, state: FSMContext, side: str):
     if len(side) > 255:
         text = '⛔️ Side must be a maximum of 255 characters.'
     elif not any(char.isalnum() for char in side):
@@ -223,43 +142,67 @@ async def card_update_create_enter_sides(message: Message, state: FSMContext):
         await message.answer(text, reply_markup=kb.refresh_button)
         await asyncio.sleep(1.5)
         await decks_list(message, state)
-        print('Mistake', time.time() - start_time)
+        return False
+    return True
 
-        return
 
-    side = side.capitalize()
+async def handle_sides(state: FSMContext, side):
     current_state = await state.get_state()
-    data, next_state, text, keyboard = {}, None, '', None
-
     if current_state == 'CardManage:front_side':
         data = {'front_side': side}
         next_state = CardManage.back_side
         text = '✌️ Enter back side'
-        keyboard = ReplyKeyboardRemove()
-    elif current_state == 'CardManage:back_side':
+        keyboard = None
+    else:
         data = {'back_side': side}
         next_state = CardManage.is_two_sides
         text = 'Would you like to study the two sides?'
         keyboard = await kb.is_two_sides()
+    return data, next_state, text, keyboard
+
+
+@router.message(CardManage.front_side)
+@router.message(CardManage.back_side)
+async def card_update_create_enter_sides(message: Message, state: FSMContext, side1: str = None):
+    side = message.text.strip() if not side1 else side1
+    if await check_sides_input(message, state, side) is False:
+        return
+
+    side = side.capitalize()
+    data, next_state, text, keyboard = await handle_sides(state, side)
 
     await state.update_data(data)
     await state.set_state(next_state)
     await message.answer(text, reply_markup=keyboard)
-    print('Success', time.time() - start_time)
 
 
 #
 
-@router.callback_query(F.data.in_(('is_two_sides', 'is_one_side')))
+@router.callback_query(F.data.startswith(('is_two_sides', 'is_one_side', 'addcard_slug_')))
 @check_current_state
-async def card_update_create_handler(callback: CallbackQuery, state: FSMContext):
-    await callback.answer()
-    choice = True if callback.data == 'is_two_sides' else False
+async def card_update_create_handler(callback: CallbackQuery, state: FSMContext, card_data=None):
     data = await state.get_data()
-    operation = data.get('card_ops_state')
+    if callback.data.startswith('addcard_slug_'):
+        slug = callback.data.split('_')[-1]
+    else:
+        slug = data.get('slug')
+
+    if slug:
+        await callback.answer()
+        message = callback.message
+        operation = data.get('card_ops_state')
+    else:
+        # await callback.message.delete()
+        await card_create_get_slug(callback.message, state)
+        is_two_sides = True if callback.data == 'is_two_sides' else False
+        await state.update_data(is_two_sides=is_two_sides)
+        return
+
+    is_two_sides = True if callback.data == 'is_two_sides' or data.get('is_two_sides') else False
+
     if operation == 'create':
         method = 'POST'
-        text = '🎉 Card successfully created.'
+        text = 'Card successfully created.'
         url = f'{BASE_URL}/cards/api/v1/manage/'
     else:
         method = 'PUT'
@@ -268,20 +211,37 @@ async def card_update_create_handler(callback: CallbackQuery, state: FSMContext)
         url = f'{BASE_URL}/cards/api/v1/manage/{card_id}/'
 
     card_data = {
-        'side1': (side1 := data.get('front_side')),
+        'side1': data.get('front_side'),
         'side2': data.get('back_side'),
-        'slug': (slug := data.get('slug')),
-        'is_two_sides': choice,
+        'slug': slug,
+        'is_two_sides': is_two_sides,
     }
 
     response = await send_request(url, method=method, data=card_data)
     status = response.get('status')
     if status // 100 == 2:
         keyboard = await kb.card_create_upd_finish(slug, is_create=True if operation == 'create' else False)
-        await callback.message.delete()
         await state.clear()
         await state.set_state(CardManage.card_ops_state)
-        await callback.message.answer(f'🎊  {text}  🎊', reply_markup=keyboard)
+        await message.edit_text(f'🎊  {text}  🎊', reply_markup=keyboard)
     else:
         text = '❕️ Something went wrong. Please try again.'
-        return await display_message_and_redirect(callback.message, state, text)
+        return await display_message_and_redirect(message, state, text)
+
+
+async def card_create_get_slug(message: Message, state: FSMContext):
+    decks_data, status = await get_decks_data(message, state)
+    if status == 200:
+        text = 'Choose a deck from the list below:'
+        params = {
+            'parse_mode': ParseMode.MARKDOWN_V2,
+            'reply_markup': await kb.deck_names(decks_data, is_quick_add=True),
+        }
+        await state.set_state(CardManage.addcard_slug)
+    else:
+        text = \
+            '🤯🥳 Oops, something went wrong.\nPlease press the REFRESH button or try again later.'
+        params = {'parse_mode': ParseMode.HTML, 'reply_markup': await kb.back()}
+
+
+    await message.edit_text(text, **params)

@@ -24,6 +24,10 @@ async def set_rating(message: Message, state: FSMContext, data_store: dict = Non
                    }
         text = message.text
         rating = ratings[text]
+    if rating == 4:
+        data = await state.get_data()
+        data['completed_cards'] = data.get('completed_cards', 0) + 1
+        await state.update_data(data)
 
     mappings_id = data_store.get('card_data', {}).get('mappings_id')
     url_get_card = data_store.get('start_config', {}).get('urls', {}).get('get_card')

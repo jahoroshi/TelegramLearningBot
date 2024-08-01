@@ -1,6 +1,7 @@
 import asyncio
 
 from aiogram import F, Router
+from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
@@ -11,6 +12,7 @@ from app.middlewares.locales import i18n, i18n_middleware
 from app.requests import send_request
 from app.services import set_user_commands, set_initial_user_language
 from app.services.middleware import set_tips_middleware
+from bot import bot
 from settings import BASE_URL
 
 router = Router()
@@ -28,7 +30,6 @@ async def cmd_start(callback_or_message: Message or CallbackQuery, state: FSMCon
 
 @router.message(F.text == 'REFRESH')
 @router.message(Command(commands=['refresh']))
-
 async def cmd_refresh(message: Message, state: FSMContext):
     has_language = await i18n_middleware.process_event(message, state)
     if has_language:
@@ -80,3 +81,26 @@ async def handle_initial_user_language(callback: CallbackQuery, state: FSMContex
 async def to_decks_list(callback: CallbackQuery, state: FSMContext):
     from app.handlers import decks_list
     await decks_list(callback.message, state)
+
+@router.message(F.text == 'a')
+async def cmd_a(message: Message, state: FSMContext):
+    text = '''
+            text = '<b>bold</b>, <strong>bold</strong>
+    <i>italic</i>, <em>italic</em>
+    <u>underline</u>, <ins>underline</ins>
+    <s>strikethrough</s>, <strike>strikethrough</strike>, <del>strikethrough</del>
+    <span class="tg-spoiler">spoiler</span>, <tg-spoiler>spoiler</tg-spoiler>
+    <b>bold <i>italic bold <s>italic bold strikethrough <span class="tg-spoiler">italic bold strikethrough spoiler</span></s> <u>underline italic bold</u></i> bold</b>
+    <a href="http://www.example.com/">inline URL</a>
+    <a href="tg://user?id=123456789">inline mention of a user</a>
+    <tg-emoji emoji-id="5368324170671202286">👍</tg-emoji>
+    <code>inline fixed-width code</code>
+    <pre>pre-formatted fixed-width code block</pre>
+    <pre><code class="language-python">pre-formatted fixed-width code block written in the Python programming language</code></pre>
+    <blockquote>Block quotation started\nBlock quotation continued\nThe last line of the block quotation</blockquote>
+    <blockquote expandable>Expandable block quotation started\nExpandable block quotation continued\nExpandable block quotation continued\nHidden by default part of the block quotation started\nExpandable block quotation continued\nThe last line of the block quotation</blockquote>'
+        await message.answer(text)
+        '''
+    await message.answer(text, parse_mode=ParseMode.HTML)
+
+

@@ -2,9 +2,14 @@ import asyncio
 import re
 from datetime import datetime
 
-from aiogram.types import CallbackQuery
+from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery, Message
 
+from app.requests import send_request
 from bot import bot
+
+import app.keyboards as kb
+from settings import BASE_URL
 
 
 async def data_handler(data):
@@ -64,7 +69,15 @@ async def delete_two_messages(callback: CallbackQuery):
     message_id = callback.message.message_id
     chat_id = callback.message.chat.id
     await bot.delete_message(chat_id=chat_id, message_id=message_id - 1)
-    # await asyncio.sleep(1)
-    # await callback.message.delete()
-    # await asyncio.sleep(0.5)
+    await asyncio.sleep(1)
+    await callback.message.delete()
+    await asyncio.sleep(0.5)
 
+
+async def get_decks_data(message: Message, state: FSMContext):
+    tg_id = state.key.user_id if state else message.from_user.id
+    get_decks_url = f'{BASE_URL}/deck/api/v1/manage/{tg_id}/'
+    response = await send_request(get_decks_url)
+    decks_data = response.get('data')
+    status = response.get('status')
+    return decks_data, status

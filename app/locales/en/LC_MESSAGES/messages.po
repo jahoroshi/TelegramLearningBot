@@ -9,7 +9,7 @@ msgid "decks"
 msgstr "Decks"
 
 msgid "greeting_after_creating_test_deck"
-msgstr "🎁 We have created a test deck for you to explore all the features of our application.\n🤓 Once you are familiar with the features, you can delete the test deck and create your own custom decks.\n🫶 Good luck!"
+msgstr "🎁 We have created a test deck for you to explore all the features of our application.\n🤓 Once you are familiar with the features, you can delete the test deck and create your own custom decks.\n🫶 Good luck!\n\n"
 
 msgid "create_deck_ddn"
 msgstr "Create new deck"

@@ -28,6 +28,7 @@ class CardManage(StatesGroup):
     front_side = State()
     back_side = State()
     is_two_sides = State()
+    addcard_slug = State()
 
 
 class StartChooseLanguage(StatesGroup):
@@ -42,8 +43,20 @@ class Reg(StatesGroup):
 class CardMode(StatesGroup):
     show_first_letters = State()
 
+
 class ServerError(StatesGroup):
     active = State()
 
+
 class ResetDeckProgress(StatesGroup):
     active = State()
+
+
+class QuickAddCard(StatesGroup):
+    card = State()
+    deck_create = State()
+    front_side = State()
+    back_side = State()
+    choose_deck = State()
+
+

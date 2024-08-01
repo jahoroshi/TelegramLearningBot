@@ -6,7 +6,7 @@ import re
 
 def gen_output_text(card_data=None, front=None, extra_text=''):
     emoji = random.choice(('🫠', '🔅', '🔆', '🔥', '✨', '️❗️', '😊', '😂', '🎯', '✴️', '💢', '🤓', '🤔'))
-    rating_names = {1: 'Again', 2: 'Good', 3: 'Hard', 4: 'Easy'}
+    rating_names = {1: 'Again', 2: 'Hard', 3: 'Good', 4: 'Easy'}
 
     if card_data:
         front = re.escape(card_data.get("front_side"))

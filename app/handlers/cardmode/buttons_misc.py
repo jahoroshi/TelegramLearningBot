@@ -30,5 +30,16 @@ async def card_is_already_known(callback: CallbackQuery, state: FSMContext):
 @check_card_data
 async def show_back(callback: CallbackQuery, state: FSMContext, data_store: dict = None):
     card_data = data_store.get('card_data')
-    text = gen_output_text(card_data=card_data)
-    await callback.message.edit_text(text, parse_mode=ParseMode.MARKDOWN_V2)
+    data = await state.get_data()
+    study_format = data_store.get('start_config', {}).get('study_format')
+    completed_cards = data.get('completed_cards', 0)
+    card_data['ratings_count']['4'] = completed_cards
+    params = {
+        'text': gen_output_text(card_data=card_data),
+        'parse_mode': ParseMode.MARKDOWN_V2,
+    }
+    if study_format == 'text':
+        await callback.message.edit_text(**params)
+    else:
+        await callback.message.delete_reply_markup()
+        await callback.message.answer(**params)
