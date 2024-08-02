@@ -8,6 +8,7 @@ from aiogram.types import BotCommandScopeDefault
 from dotenv import load_dotenv
 
 from app.handlers import main_router
+from app.middlewares import TestMiddleware
 from bot import bot, dp
 
 
@@ -16,6 +17,10 @@ async def main():
     # await async_main()
     # logging.info("Tables created successfully")
     load_dotenv()
+    mw = TestMiddleware()
+    main_router.message.middleware(mw)
+    main_router.callback_query.middleware(mw)
+
     dp.include_router(main_router)
     logging.info("Starting bot polling")
 

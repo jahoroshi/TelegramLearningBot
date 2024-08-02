@@ -134,6 +134,8 @@ async def card_update_getting_id(message: Message, state: FSMContext):
 
 
 async def check_sides_input(message: Message, state: FSMContext, side: str):
+    if side == '...':
+        return True
     if len(side) > 255:
         text = '⛔️ Side must be a maximum of 255 characters.'
     elif not any(char.isalnum() for char in side):
@@ -206,16 +208,21 @@ async def card_update_create_handler(callback: CallbackQuery, state: FSMContext,
         url = f'{BASE_URL}/cards/api/v1/manage/'
     else:
         method = 'PUT'
-        text = '🪅 Card successfully updated.'
+        text = 'Card successfully updated.'
         card_id = data.get('card_id')
         url = f'{BASE_URL}/cards/api/v1/manage/{card_id}/'
 
+    side1 = data.get('front_side')
+    side2 = data.get('back_side')
+
     card_data = {
-        'side1': data.get('front_side'),
-        'side2': data.get('back_side'),
+        'side1': side1 if side1 != '...' else None,
+        'side2': side2 if side2 != '...' else None,
         'slug': slug,
         'is_two_sides': is_two_sides,
     }
+
+    card_data = {k: v for k, v in card_data.items() if v is not None}
 
     response = await send_request(url, method=method, data=card_data)
     status = response.get('status')

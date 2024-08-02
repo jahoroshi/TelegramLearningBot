@@ -22,6 +22,4 @@ async def set_user_commands(message: Message):
         BotCommand(command='help', description='Get help information'),
     ]
 
-    menu_button = MenuButtonCommands(commands=user_commands)
-    res = await bot.set_my_commands(user_commands, scope=BotCommandScopeChat(chat_id=message.chat.id))
-    print(res)
+    await bot.set_my_commands(user_commands, scope=BotCommandScopeChat(chat_id=message.chat.id))

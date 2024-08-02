@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 from typing import Dict, Any
 
@@ -8,8 +9,6 @@ from aiogram.utils.i18n import I18n, ConstI18nMiddleware
 from app.services import StartChooseLanguage
 from app.services import get_or_create_user
 from bot import dp
-
-import logging
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -28,19 +27,19 @@ class CustomI18nMiddleware(ConstI18nMiddleware):
 
     async def process_event(self, message, state):
 
-            telegram_id = state.key.user_id
-            telegram_username = message.chat.username
+        telegram_id = state.key.user_id
+        telegram_username = message.chat.username
 
-            user = await get_or_create_user(telegram_id, telegram_username)
-            if user:
-                language = user.get('language')
-                if language:
-                    self.locale = language
-                    I18n.current_locale = language
-                    return True
-                else:
-                    await self._initial_language_setup(message, state)
-                    return False
+        user = await get_or_create_user(telegram_id, telegram_username)
+        if user:
+            language = user.get('language', '')
+            if language:
+                self.locale = language.lower()
+                I18n.current_locale = language.lower()
+                return language
+            else:
+                await self._initial_language_setup(message, state)
+                return False
 
     async def _initial_language_setup(self, message, state):
         self.locale = message.from_user.language_code or 'en'
@@ -50,6 +49,9 @@ class CustomI18nMiddleware(ConstI18nMiddleware):
 
     async def set_locale(self, value: Any):
         self.locale = value
+
+    async def get_lang(self):
+        return self.locale
 
 
 CUR_DIR = Path(__file__).parent.parent.absolute()

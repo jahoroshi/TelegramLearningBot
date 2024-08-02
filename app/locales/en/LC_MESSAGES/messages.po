@@ -24,4 +24,4 @@ msgid "study_format_text_en"
 msgstr "Text"
 
 msgid "tip_message_1"
-msgstr "To create a new category, access settings, or restart the bot, click the \"Menu\" button below this message.\n🔻🔻"
+msgstr "To create a new category, access settings, or restart the bot, click the \"Menu\" button below this message.\n👇👇👇"

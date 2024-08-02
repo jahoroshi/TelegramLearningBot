@@ -8,3 +8,5 @@ async def set_tips_middleware():
     main_router.message.middleware(middleware)
     main_router.callback_query.middleware(middleware)
     return middleware
+
+

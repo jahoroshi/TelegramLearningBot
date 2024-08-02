@@ -10,7 +10,7 @@ from pydantic import ValidationError
 
 import app.keyboards as kb
 from app.handlers.cardmode.speech import get_sound
-from app.handlers.start import cmd_start
+from app.handlers.bot.start import cmd_start
 # from app.middlewares import TestMiddleware
 from app.requests import send_request
 from app.services.cardmode import gen_output_text
