@@ -331,7 +331,7 @@ msgstr "Back"
 msgid "manage"
 msgstr "manage"
 
-msgid "add_new_deck"
+msgid "create_new_deck"
 msgstr "Add new deck"
 
 msgid "create_new_deck"
@@ -424,7 +424,7 @@ msgstr "Answer"
 msgid "something_went_wrong_persistent_error"
 msgstr "🤯🥳 Something went wrong. If this issue persists please contact us through our help center at ankichat.com"
 
-msgid "correct_answer_tip"
+msgid "correct_answer"
 msgstr "T!!!!!!he correct answer is 🫴  👈"
 
 msgid "add_card_quick"

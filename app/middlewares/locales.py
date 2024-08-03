@@ -6,7 +6,7 @@ from aiogram import types
 from aiogram.types import CallbackQuery
 from aiogram.utils.i18n import I18n, ConstI18nMiddleware
 from app.middlewares.i18n_init import i18n
-from app.utils import StartChooseLanguage
+from app.states import StartChooseLanguage
 from app.utils import get_or_create_user
 from bot import dp
 
@@ -44,8 +44,8 @@ class CustomI18nMiddleware(ConstI18nMiddleware):
     async def _initial_language_setup(self, message, state):
         self.locale = message.from_user.language_code or 'en'
         await state.set_state(StartChooseLanguage.active)
-        from app.handlers import choose_initial_language
-        await choose_initial_language(message)
+        from app.services import process_choose_initial_language
+        await process_choose_initial_language(message)
 
     async def set_locale(self, value: Any):
         self.locale = value

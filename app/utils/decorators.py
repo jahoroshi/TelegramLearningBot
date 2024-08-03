@@ -3,6 +3,7 @@ import functools
 from aiogram import Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
+from app.states import DeckViewingState
 
 # from app.middlewares import TestMiddleware
 
@@ -29,14 +30,14 @@ def check_current_state(func):
             if current_state in permissions[func_name]:
                 return await func(*args, **kwargs)
             else:
-                from app.handlers import to_decks_list
-                return await to_decks_list(*args, **kwargs)
+                from app.services import handle_to_decks_list
+                return await handle_to_decks_list(*args, **kwargs)
 
         if current_state in permissions['global']:
             return await func(*args, **kwargs)
 
-        from app.handlers import to_decks_list
-        return await to_decks_list(*args, **kwargs)
+        from app.services import handle_to_decks_list
+        return await handle_to_decks_list(*args, **kwargs)
 
     return wrapper
 
@@ -48,7 +49,6 @@ def clear_current_state(func):
         current_state = await state.get_state()
         if current_state not in ('DeckViewingState:active', 'CardManage:card_ops_state', 'CardManage:is_two_sides'):
             await state.clear()
-            from app.utils import DeckViewingState
             await state.set_state(DeckViewingState.active)
         return await func(*args, **kwargs)
 
@@ -70,8 +70,8 @@ def check_card_data(func):
         card_data = data_store.get('card_data')
         kwargs['data_store'] = data_store
         if card_data is None:
-            from app.handlers.cardmode.cardmode_start import card_mode_start
-            await card_mode_start(message=msg, state=state)
+            from app.services.cardmode.cardmode_start import process_card_mode_start
+            await process_card_mode_start(message=msg, state=state)
             return
         return await func(*args, **kwargs)
 

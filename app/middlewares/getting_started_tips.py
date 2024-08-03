@@ -3,13 +3,13 @@ import logging
 import random
 from typing import Callable, Dict, Any, Awaitable
 
-from aiogram import BaseMiddleware, exceptions
+from aiogram import BaseMiddleware
 from aiogram.enums import ParseMode
 from aiogram.types import TelegramObject, CallbackQuery
 
+from app.middlewares.i18n_init import i18n
 from app.utils import set_initial_user_language
 from bot import bot
-from app.middlewares.i18n_init import i18n
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

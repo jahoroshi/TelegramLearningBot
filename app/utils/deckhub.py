@@ -1,15 +1,15 @@
 import asyncio
-import re
 from datetime import datetime
 
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
+from app.middlewares.i18n_init import i18n
 from app.requests import send_request
 from bot import bot
-
-import app.keyboards as kb
 from settings import BASE_URL
+
+_ = i18n.gettext
 
 
 async def data_handler(data):
@@ -17,31 +17,10 @@ async def data_handler(data):
     hours, remainder = divmod(data.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
     if days:
-        text = f'{days}d : {hours}h : {minutes} min'
+        text = _('{days}d : {hours}h : {minutes} min').format(days=days, hours=hours, minutes=minutes)
     else:
-        text = f'{hours}h : {minutes}min'
-    return f'\nNext review will be in:\n{text}'
-
-
-async def generate_deck_list_text(deck):
-    cards_count = deck.get('cards_count')
-    new_cards_count = deck.get('new_cards_count')
-    reviews_count = deck.get('reviews_count')
-    next_review_date = None
-    if cards_count > 0 and reviews_count == 0 and new_cards_count == 0:
-        min_review_date = deck.get('min_review_date')
-        current_server_time = deck.get('current_time')
-        next_review_date = datetime.fromisoformat(min_review_date) - datetime.fromisoformat(current_server_time)
-        next_review_date = await data_handler(next_review_date)
-
-    text = f'''
-*{f"{re.escape(deck.get('name', '_'))}":<70}* 
-{f'>Cards in deck: {cards_count:<60}' if cards_count else f'>_No cards in deck_'}
-{f'>New cards for studying:  {new_cards_count}' if new_cards_count else f'>_No cards for studying_'}
-{f'>Cards for review: {reviews_count}' if reviews_count else f'>_No cards for review_'}
->{re.escape(next_review_date) if next_review_date else ''}
-            '''
-    return text
+        text = _('{hours}h : {minutes}min').format(hours=hours, minutes=minutes)
+    return _('\nNext review will be in:\n{text}').format(text=text)
 
 
 async def create_deck_info(deck):
@@ -49,19 +28,28 @@ async def create_deck_info(deck):
     new_cards_count = deck.get('new_cards_count')
     reviews_count = deck.get('reviews_count')
     next_review_date = None
+    deck_name = deck.get('name', '_')
+    deck_name = deck_name.replace("<", "&lt;").replace(">", "&gt;")
     if cards_count > 0 and reviews_count == 0 and new_cards_count == 0:
         min_review_date = deck.get('min_review_date')
         current_server_time = deck.get('current_time')
         next_review_date = datetime.fromisoformat(min_review_date) - datetime.fromisoformat(current_server_time)
         next_review_date = await data_handler(next_review_date)
 
-    text = f'''
-*{f"{re.escape(deck.get('name', '_'))}":<70}* 
-{f'>Cards in deck: {cards_count:<60}' if cards_count else f'>_No cards in deck_'}
-{f'>New cards for studying:  {new_cards_count}' if new_cards_count else f'>_No cards for studying_'}
-{f'>Cards for review: {reviews_count}' if reviews_count else f'>_No cards for review_'}
->{re.escape(next_review_date) if next_review_date else ''}
-            '''
+    text = _(
+        '''
+<b>{deck_name:<70}</b> 
+<blockquote>{cards_count_text}
+{new_cards_text}
+{reviews_text}
+{next_review_text}</blockquote>
+        ''').format(
+        deck_name=f"{deck_name}",
+        cards_count_text=f'{_("cards_in_deck")}: {cards_count:<60}' if cards_count else f'<i>{_("no_cards_in_deck")}</i>',
+        new_cards_text=f'{_("new_cards_for_studying")}:  {new_cards_count}' if new_cards_count else f'<i>{_("no_new_cards_for_studying")}</i>',
+        reviews_text=f'{_("cards_for_review")}: {reviews_count}' if reviews_count else f'<i>{_("no_cards_for_review")}</i>',
+        next_review_text=next_review_date if next_review_date else ''
+    )
     return text
 
 

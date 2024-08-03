@@ -1,9 +1,9 @@
+from datetime import datetime
+
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from app.middlewares.i18n_init import i18n
-
-from datetime import datetime
 
 _ = i18n.gettext
 
@@ -40,7 +40,7 @@ async def manage_deck(deck):
     new_cards_count = deck.get('new_cards_count')
     reviews_count = deck.get('reviews_count')
     slug = deck.get('slug')
-    rows = [3, 2]
+    rows = [2, 2]
 
     if new_cards_count:
         keyboard.add(InlineKeyboardButton(text=_('study_new'), callback_data=f'choose_study_format_{slug}_new'))
@@ -50,7 +50,7 @@ async def manage_deck(deck):
         rows.insert(0, 1)
     keyboard.add(InlineKeyboardButton(text=_('show_cards'), callback_data=f'show_cards_{slug}'))
     keyboard.add(InlineKeyboardButton(text=_('import_cards'), callback_data=f'import_cards_{slug}'))
-    keyboard.add(InlineKeyboardButton(text=_('add_card'), callback_data=f'add_card_{slug}'))
+    # keyboard.add(InlineKeyboardButton(text=_('add_card'), callback_data=f'add_card_{slug}'))
     keyboard.add(InlineKeyboardButton(text=_('deck_manage'), callback_data=f'manage_deck_edit_del_{slug}'))
     keyboard.add(InlineKeyboardButton(text=_('back_to_decks'), callback_data=f'back_to_decks'))
     return keyboard.adjust(*rows).as_markup()
@@ -63,7 +63,7 @@ async def manage_deck_edit_del_res(slug):
     keyboard.add(InlineKeyboardButton(text=_('reset_progress'), callback_data=f'reset_progress_{slug}'))
     keyboard.add(InlineKeyboardButton(text=_('back_to_decks_list'), callback_data='back_to_decks'))
     keyboard.add(InlineKeyboardButton(text=_('back_to_deck'), callback_data=f'deck_details_{slug}'))
-    return keyboard.adjust(2, 1, 2).as_markup()
+    return keyboard.adjust(1, 1, 1, 2).as_markup()
 
 
 async def reset_deck_progress(slug):
@@ -93,16 +93,30 @@ async def deckhub_manage_button():
 
 async def deckhub_manage_actions():
     keyword = InlineKeyboardBuilder()
-    keyword.add(InlineKeyboardButton(text=_('add_new_deck'), callback_data=f'deck_create'))
+    keyword.add(InlineKeyboardButton(text=_('create_new_deck'), callback_data=f'deck_create'))
     keyword.add(InlineKeyboardButton(text=_('delete_deck'), callback_data=f'deck_delete'))
 
 
+async def back_to_decklist_or_deckdetails_btns(slug):
+    btn1 = InlineKeyboardButton(text=_('back_to_decks_list'), callback_data='back_to_decks')
+    btn2 = InlineKeyboardButton(text=_('back_to_deck'), callback_data=f'deck_details_{slug}')
+    return btn1, btn2
+
+
 async def back_to_decklist_or_deckdetails(slug):
+    btn1, btn2 = await back_to_decklist_or_deckdetails_btns(slug)
     keyboard = InlineKeyboardBuilder()
-    keyboard.add(InlineKeyboardButton(text=_('back_to_decks_list'), callback_data='back_to_decks'))
-    keyboard.add(InlineKeyboardButton(text=_('back_to_deck'), callback_data=f'deck_details_{slug}'))
+    keyboard.add(btn1)
+    keyboard.add(btn2)
     return keyboard.as_markup()
 
+async def back_to_decklist_or_details_addcard(slug):
+    btn1, btn2 = await back_to_decklist_or_deckdetails_btns(slug)
+    keyboard = InlineKeyboardBuilder()
+    keyboard.add(InlineKeyboardButton(text=_('add_card'), callback_data=f'add_card_{slug}'))
+    keyboard.add(btn1)
+    keyboard.add(btn2)
+    return keyboard.adjust(1, 2).as_markup()
 
 async def create_new_deck():
     keyboard = InlineKeyboardBuilder()
@@ -126,8 +140,6 @@ refresh_button = ReplyKeyboardMarkup(
 create_new_deck_button = ReplyKeyboardMarkup(
     keyboard=[[KeyboardButton(text=_('create_deck'))]],
     input_field_placeholder=_('press_to_start_studying'), resize_keyboard=True)
-
-
 
 
 async def generate_available_button(review_date):
