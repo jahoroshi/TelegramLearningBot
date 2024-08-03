@@ -7,18 +7,21 @@ from aiogram.types import CallbackQuery
 import app.keyboards as kb
 # from app.middlewares import TestMiddleware
 from app.requests import send_request
-from app.services.cardmode import gen_output_text
-from app.services.decorators import check_card_data
+from app.utils.cardmode import gen_output_text
+from app.utils.decorators import check_card_data
+from app.middlewares.i18n_init import i18n
 
 from settings import BASE_URL
 
 router = Router()
 
+_ = i18n.gettext
+
 @router.callback_query(F.data.in_(('button_speech', 'button_speech_locked')))
 @check_card_data
 async def text_to_speech(callback: CallbackQuery, state: FSMContext, data_store: dict = None):
     if callback.data == 'button_speech_locked':
-        await callback.answer('The card has already been announced.')
+        await callback.answer(_('already_announced'))
         return
     card_data = data_store.get('card_data', {})
     start_config = data_store.get('start_config', {})
@@ -39,7 +42,7 @@ async def text_to_speech(callback: CallbackQuery, state: FSMContext, data_store:
 
         await callback.message.answer_voice(file)
     else:
-        await callback.answer('Something went wrong with converting text to speech')
+        await callback.answer(_('text_to_speech_error'))
 
 
 async def get_sound(start_config, mappings_id):

@@ -4,9 +4,9 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
 import app.keyboards as kb
-from app.middlewares.locales import i18n
+from app.middlewares.i18n_init import i18n
 from app.requests import send_request
-from app.services import display_message_and_redirect, DeckCreate
+from app.utils import display_message_and_redirect, DeckCreate
 from settings import BASE_URL
 
 _ = i18n.gettext
@@ -22,7 +22,7 @@ async def deck_create(callback_or_message: CallbackQuery or Message, state: FSMC
         message = callback_or_message.message
     else:
         message = callback_or_message
-    text = 'Enter new deck\'s name'
+    text = _('enter_deck_name')
     await message.answer(text, reply_markup=await kb.back())
     await state.set_state(DeckCreate.name)
 
@@ -39,7 +39,7 @@ async def deck_create_handler(message: Message, state: FSMContext):
     response = await send_request(url, method='POST', data=data)
 
     if response.get('status') == 201:
-        text = '🎉 Deck was successfully created.'
+        text = _('deck_created_successfully')
     else:
-        text = 'Something went wrong.'
+        text = _('something_went_wrong')
     await display_message_and_redirect(message, state, text)

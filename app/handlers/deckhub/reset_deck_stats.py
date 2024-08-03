@@ -6,10 +6,10 @@ from aiogram.types import CallbackQuery
 
 import app.keyboards as kb
 from app.handlers.deckhub.decklist import decks_list
-from app.middlewares.locales import i18n
+from app.middlewares.i18n_init import i18n
 from app.requests import send_request
-from app.services import DeckViewingState
-from app.services.states import ResetDeckProgress
+from app.utils import DeckViewingState
+from app.utils.states import ResetDeckProgress
 from settings import BASE_URL
 
 _ = i18n.gettext
@@ -20,7 +20,7 @@ router = Router()
 async def reset_deck_progress_confirm(callback: CallbackQuery, state: FSMContext):
     slug = callback.data.split('_')[-1]
     await state.set_state(ResetDeckProgress.active)
-    text = '♻️ Resetting your progress will clear all your study data and return all cards in this deck to their initial state.\nCards will not be removed from the deck.\nResetting only affects the current deck.\n\n❓ Do you want to proceed?'
+    text = _('reset_progress_confirmation')
     await callback.message.edit_text(text, reply_markup=await kb.reset_deck_progress(slug))
 
 
@@ -33,11 +33,11 @@ async def reset_deck_progress_handler(callback: CallbackQuery, state: FSMContext
         url = f'{BASE_URL}/deck/api/v1/manage/reset/{telegram_id}/{slug}/'
         response = await send_request(url, method='GET')
         if response.get('status') == 200:
-            text = '♻️ Deck was successfully reset. ♻️\n_'
+            text = _('deck_reset_success')
         elif response.get('status') == 204:
-            text = 'Deck is empty.'
+            text = _('deck_is_empty')
         else:
-            text = 'Something went wrong.'
+            text = _('something_went_wrong')
         await callback.message.delete_reply_markup()
         await state.set_state(DeckViewingState.active)
         await callback.message.answer(text, reply_markup=kb.refresh_button)

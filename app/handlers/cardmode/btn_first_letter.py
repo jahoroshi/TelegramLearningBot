@@ -5,10 +5,13 @@ from aiogram.types import CallbackQuery
 
 import app.keyboards as kb
 # from app.middlewares import TestMiddleware
-from app.services.cardmode import gen_output_text
-from app.services.decorators import check_card_data
+from app.utils.cardmode import gen_output_text
+from app.utils.decorators import check_card_data
+from app.middlewares.i18n_init import i18n
 
 router = Router()
+
+_ = i18n.gettext
 
 @router.callback_query(F.data.startswith('button_show_first_letters'))
 @check_card_data
@@ -38,10 +41,11 @@ async def show_first_letters(callback: CallbackQuery, state: FSMContext, data_st
         letters_to_show -= 1
 
     update_names = {
-        button_name: f'Show {letters_to_show} letters'
+        button_name: _('show_letters_button').format(letters_to_show)
     }
 
     await callback.message.edit_text(
         text,
         reply_markup=await kb.card_mode_buttons(buttons, update_names=update_names),
-        parse_mode=ParseMode.MARKDOWN_V2)
+        parse_mode=ParseMode.MARKDOWN_V2
+    )

@@ -6,9 +6,9 @@ from aiogram.types import CallbackQuery
 
 import app.keyboards as kb
 from app.handlers.deckhub.decklist import decks_list
-from app.middlewares.locales import i18n
+from app.middlewares.i18n_init import i18n
 from app.requests import send_request
-from app.services import check_current_state, DeckViewingState, DeckDelete, delete_two_messages
+from app.utils import check_current_state, DeckViewingState, DeckDelete, delete_two_messages
 from settings import BASE_URL
 
 _ = i18n.gettext
@@ -21,7 +21,7 @@ async def delete_deck_confirm(callback: CallbackQuery, state: FSMContext):
     await callback.answer()
     await state.set_state(DeckDelete.active)
     slug = callback.data.split('_')[-1]
-    text = 'Are you sure to delete this deck?'
+    text = _('confirm_delete_deck')
     await callback.message.delete_reply_markup()
     await callback.message.answer(text, reply_markup=await kb.confirm_delete_desk(slug))
 
@@ -35,10 +35,10 @@ async def deck_delete(callback: CallbackQuery, state: FSMContext):
         url = f'{BASE_URL}/deck/api/v1/manage/{slug}/'
         response = await send_request(url, method='DELETE')
         if response.get('status') == 204:
-            text = '🧨 Deck was successfully deleted.'
+            text = _('deck_deleted')
             await delete_two_messages(callback)
         else:
-            text = 'Something went wrong.'
+            text = _('something_went_wrong')
             await callback.message.delete_reply_markup()
         await state.set_state(DeckViewingState.active)
         await callback.message.answer(text, reply_markup=kb.refresh_button)

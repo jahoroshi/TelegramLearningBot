@@ -4,9 +4,12 @@ import random
 import re
 
 
+
 def gen_output_text(card_data=None, front=None, extra_text=''):
+    from app.middlewares.i18n_init import i18n
+    _ = i18n.gettext
     emoji = random.choice(('🫠', '🔅', '🔆', '🔥', '✨', '️❗️', '😊', '😂', '🎯', '✴️', '💢', '🤓', '🤔'))
-    rating_names = {1: 'Again', 2: 'Hard', 3: 'Good', 4: 'Easy'}
+    rating_names = {1: _('again'), 2: _('hard'), 3: _('good'), 4: _('easy')}
 
     if card_data:
         front = re.escape(card_data.get("front_side"))
@@ -21,7 +24,7 @@ def gen_output_text(card_data=None, front=None, extra_text=''):
 
 
 
->*Answer*
+>*{_("answer")}*
 >🔥🔥 _*{back.center(35, ' ')}*_  
 
 
@@ -44,17 +47,14 @@ def gen_output_text(card_data=None, front=None, extra_text=''):
 >{re.escape(extra_text)}
 """
 
-    return text if text else ("🤯🥳 Something went wrong. "
-                              "If this issue persists please contact us through our help center at ankichat.com")
+    return text if text else _("something_went_wrong_persistent_error")
 
 
-async def timer_del_msg(message, timer: int = 1):
-    await asyncio.sleep(timer)
-    await message.delete()
-
-
-async def timer_send_msg(message, timer: int = 10):
-    await asyncio.sleep(timer)
-    await message.answer('T!!!!!!he correct answer is 🫴  👈')
-
-
+# async def timer_del_msg(message, timer: int = 1):
+#     await asyncio.sleep(timer)
+#     await message.delete()
+#
+#
+# async def timer_send_msg(message, timer: int = 10):
+#     await asyncio.sleep(timer)
+#     await message.answer(_('correct_answer_tip'))

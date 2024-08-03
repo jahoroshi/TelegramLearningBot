@@ -5,10 +5,13 @@ from aiogram.types import Message, CallbackQuery
 
 import app.keyboards as kb
 from app.requests import send_request
-from app.services import check_current_state, ImportCards
+from app.utils import check_current_state, ImportCards
+from app.middlewares.i18n_init import i18n
 from settings import BASE_URL
 
 router = Router()
+
+_ = i18n.gettext
 
 @router.callback_query(F.data.startswith('import_cards_'))
 @check_current_state
@@ -18,18 +21,10 @@ async def import_cards(callback: CallbackQuery, state: FSMContext):
     slug = callback.data.split('_')[-1]
     await state.update_data(slug=slug)
     await callback.message.edit_text(
-        f'''🔔 *Import instruction:*
-» Max lenght message 4096 chars\.\n
-» Use semicolon * \; * as separator between sides\n
-» Each card must be on a new line\.
-
-*Example\:*
->\(_front side_\) *\;* \(_back side_\)
->{f"Apple":^14} *\;* {f"Яблоко":^11}
->{f"Orange":^12} *\;* {f"Апельсин":^11}
-
-_enter text or press back for cansel_
-''', parse_mode=ParseMode.MARKDOWN_V2, reply_markup=await kb.back_to_decklist_or_deckdetails(slug))
+        _('import_instruction'),
+        parse_mode=ParseMode.MARKDOWN_V2,
+        reply_markup=await kb.back_to_decklist_or_deckdetails(slug)
+    )
 
 
 @router.message(ImportCards.data)
@@ -50,7 +45,7 @@ async def import_cards_handler(message: Message, state: FSMContext):
     if status == 201:
         text = response.get('data', {}).get('detail')
     else:
-        text = '❗️ Something went wrong.'
+        text = _('something_went_wrong')
     await message.answer(text, reply_markup=await kb.back_to_decklist_or_deckdetails(slug))
     # await asyncio.sleep(1)
     # await decks_list(message, state)

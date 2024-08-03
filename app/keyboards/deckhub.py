@@ -1,7 +1,7 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from app.middlewares.locales import i18n
+from app.middlewares.i18n_init import i18n
 
 from datetime import datetime
 
@@ -43,71 +43,70 @@ async def manage_deck(deck):
     rows = [3, 2]
 
     if new_cards_count:
-        keyboard.add(InlineKeyboardButton(text='Study new', callback_data=f'choose_study_format_{slug}_new'))
+        keyboard.add(InlineKeyboardButton(text=_('study_new'), callback_data=f'choose_study_format_{slug}_new'))
         rows.insert(0, 1)
     if reviews_count:
-        keyboard.add(InlineKeyboardButton(text='Review cards', callback_data=f'choose_study_format_{slug}_review'))
+        keyboard.add(InlineKeyboardButton(text=_('review_cards'), callback_data=f'choose_study_format_{slug}_review'))
         rows.insert(0, 1)
-    keyboard.add(InlineKeyboardButton(text='Show cards', callback_data=f'show_cards_{slug}'))
-    keyboard.add(InlineKeyboardButton(text='Import cards', callback_data=f'import_cards_{slug}'))
-    keyboard.add(InlineKeyboardButton(text='Add card', callback_data=f'add_card_{slug}'))
-    keyboard.add(InlineKeyboardButton(text='Deck manage', callback_data=f'manage_deck_edit_del_{slug}'))
-    keyboard.add(InlineKeyboardButton(text='« Back to decks', callback_data=f'back_to_decks'))
+    keyboard.add(InlineKeyboardButton(text=_('show_cards'), callback_data=f'show_cards_{slug}'))
+    keyboard.add(InlineKeyboardButton(text=_('import_cards'), callback_data=f'import_cards_{slug}'))
+    keyboard.add(InlineKeyboardButton(text=_('add_card'), callback_data=f'add_card_{slug}'))
+    keyboard.add(InlineKeyboardButton(text=_('deck_manage'), callback_data=f'manage_deck_edit_del_{slug}'))
+    keyboard.add(InlineKeyboardButton(text=_('back_to_decks'), callback_data=f'back_to_decks'))
     return keyboard.adjust(*rows).as_markup()
 
 
 async def manage_deck_edit_del_res(slug):
     keyboard = InlineKeyboardBuilder()
-    keyboard.add(InlineKeyboardButton(text='✎ Rename deck', callback_data=f'rename_deck_{slug}'))
-    keyboard.add(InlineKeyboardButton(text='× Delete deck', callback_data=f'delete_deck_{slug}'))
-    keyboard.add(InlineKeyboardButton(text='Reset Progress', callback_data=f'reset_progress_{slug}'))
-    keyboard.add(InlineKeyboardButton(text='« Back to decks list', callback_data='back_to_decks'))
-    keyboard.add(InlineKeyboardButton(text='« Back to deck', callback_data=f'deck_details_{slug}'))
+    keyboard.add(InlineKeyboardButton(text=_('rename_deck'), callback_data=f'rename_deck_{slug}'))
+    keyboard.add(InlineKeyboardButton(text=_('delete_deck'), callback_data=f'delete_deck_{slug}'))
+    keyboard.add(InlineKeyboardButton(text=_('reset_progress'), callback_data=f'reset_progress_{slug}'))
+    keyboard.add(InlineKeyboardButton(text=_('back_to_decks_list'), callback_data='back_to_decks'))
+    keyboard.add(InlineKeyboardButton(text=_('back_to_deck'), callback_data=f'deck_details_{slug}'))
     return keyboard.adjust(2, 1, 2).as_markup()
 
 
 async def reset_deck_progress(slug):
     keyboard = InlineKeyboardBuilder()
-    keyboard.add(InlineKeyboardButton(text='Reset', callback_data=f'reset_deck_confirm_{slug}'))
-    keyboard.add(InlineKeyboardButton(text='« Back to deck manage', callback_data=f'manage_deck_edit_del_{slug}'))
+    keyboard.add(InlineKeyboardButton(text=_('reset'), callback_data=f'reset_deck_confirm_{slug}'))
+    keyboard.add(InlineKeyboardButton(text=_('back_to_deck_manage'), callback_data=f'manage_deck_edit_del_{slug}'))
     return keyboard.adjust(2).as_markup()
 
 
 async def back():
     keyboard = InlineKeyboardBuilder()
-    keyboard.add(InlineKeyboardButton(text='« Back to decks', callback_data='back_to_decks'))
+    keyboard.add(InlineKeyboardButton(text=_('back_to_decks'), callback_data='back_to_decks'))
     return keyboard.as_markup()
 
 
 async def confirm_delete_desk(slug):
     keyboard = InlineKeyboardBuilder()
-    keyboard.add(InlineKeyboardButton(text='Delete', callback_data=f'confirm_delete_deck_{slug}'))
-    keyboard.add(InlineKeyboardButton(text='Back', callback_data='to_decks_list'))
+    keyboard.add(InlineKeyboardButton(text=_('delete'), callback_data=f'confirm_delete_deck_{slug}'))
+    keyboard.add(InlineKeyboardButton(text=_('back'), callback_data='to_decks_list'))
     return keyboard.as_markup()
 
 
 async def deckhub_manage_button():
     keyboard = InlineKeyboardBuilder()
-    keyboard.add(InlineKeyboardButton(text='manage', callback_data=f'deckhub_manage'))
+    keyboard.add(InlineKeyboardButton(text=_('manage'), callback_data=f'deckhub_manage'))
 
 
 async def deckhub_manage_actions():
     keyword = InlineKeyboardBuilder()
-    keyword.add(InlineKeyboardButton(text='Add new deck', callback_data=f'deck_create'))
-    keyword.add(InlineKeyboardButton(text='Delete deck', callback_data=f'deck_delete'))
+    keyword.add(InlineKeyboardButton(text=_('add_new_deck'), callback_data=f'deck_create'))
+    keyword.add(InlineKeyboardButton(text=_('delete_deck'), callback_data=f'deck_delete'))
 
 
 async def back_to_decklist_or_deckdetails(slug):
     keyboard = InlineKeyboardBuilder()
-    keyboard.add(InlineKeyboardButton(text='« Back to decks list', callback_data='back_to_decks'))
-    keyboard.add(InlineKeyboardButton(text='« Back to deck', callback_data=f'deck_details_{slug}'))
+    keyboard.add(InlineKeyboardButton(text=_('back_to_decks_list'), callback_data='back_to_decks'))
+    keyboard.add(InlineKeyboardButton(text=_('back_to_deck'), callback_data=f'deck_details_{slug}'))
     return keyboard.as_markup()
-
 
 
 async def create_new_deck():
     keyboard = InlineKeyboardBuilder()
-    keyboard.add(InlineKeyboardButton(text='Create new deck', callback_data=f'deck_create'))
+    keyboard.add(InlineKeyboardButton(text=_('create_new_deck'), callback_data=f'deck_create'))
     return keyboard.as_markup()
 
 
@@ -121,33 +120,35 @@ async def choose_study_format(slug, study_mode):
 
 
 refresh_button = ReplyKeyboardMarkup(
-    keyboard=[[KeyboardButton(text='REFRESH')]],
-    input_field_placeholder='Press to Start Studying', resize_keyboard=True)
+    keyboard=[[KeyboardButton(text=_('refresh'))]],
+    input_field_placeholder=_('press_to_start_studying'), resize_keyboard=True)
 
 create_new_deck_button = ReplyKeyboardMarkup(
-    keyboard=[[KeyboardButton(text='Create deck')]],
-    input_field_placeholder='Press to Start Studying', resize_keyboard=True)
+    keyboard=[[KeyboardButton(text=_('create_deck'))]],
+    input_field_placeholder=_('press_to_start_studying'), resize_keyboard=True)
 
-main_button_review = ReplyKeyboardMarkup(
-    keyboard=[[KeyboardButton(text='Review all decks')]],
-    input_field_placeholder='Press to Start Studying', resize_keyboard=True)
 
-main_button_addcard = ReplyKeyboardMarkup(
-    keyboard=[[KeyboardButton(text='Add card')]],
-    input_field_placeholder='Press to Start Studying', resize_keyboard=True)
-
-main_button_new = ReplyKeyboardMarkup(
-    keyboard=[[KeyboardButton(text='Study all decks')]],
-    input_field_placeholder='Press to Start Studying', resize_keyboard=True)
 
 
 async def generate_available_button(review_date):
     return ReplyKeyboardMarkup(
-        keyboard=[[KeyboardButton(text=f"⏰ Next review will be in {int(review_date)}h.")]],
-        input_field_placeholder='Card will be available:', resize_keyboard=True)
+        keyboard=[[KeyboardButton(text=_('next_review').format(int(review_date)))]],
+        input_field_placeholder=_('card_will_be_available'), resize_keyboard=True)
 
 
 async def main_button(decks_data):
+    main_button_review = ReplyKeyboardMarkup(
+        keyboard=[[KeyboardButton(text=_('review_all_decks'))]],
+        input_field_placeholder=_('press_to_start_studying'), resize_keyboard=True)
+
+    main_button_addcard = ReplyKeyboardMarkup(
+        keyboard=[[KeyboardButton(text=_('add_card'))]],
+        input_field_placeholder=_('press_to_start_studying'), resize_keyboard=True)
+
+    main_button_new = ReplyKeyboardMarkup(
+        keyboard=[[KeyboardButton(text=_('study_all_decks'))]],
+        input_field_placeholder=_('press_to_start_studying'), resize_keyboard=True)
+
     if any(deck['reviews_count'] != 0 for deck in decks_data):
         return main_button_review
     cards_count = any(deck['cards_count'] for deck in decks_data)

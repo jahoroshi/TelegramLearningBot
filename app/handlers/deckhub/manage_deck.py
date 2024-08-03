@@ -3,7 +3,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
 import app.keyboards as kb
-from app.middlewares.locales import i18n
+from app.middlewares.i18n_init import i18n
 
 _ = i18n.gettext
 router = Router()

@@ -10,21 +10,21 @@ from aiogram.types import Message
 import app.keyboards as kb
 from app.middlewares.locales import i18n, i18n_middleware
 from app.requests import send_request
-from app.services import set_user_commands, set_initial_user_language
-from app.services.middleware import set_tips_middleware
+from app.utils import set_user_commands, set_initial_user_language
+from app.utils.middleware import set_tips_middleware
 from settings import BASE_URL
 
 router = Router()
 _ = i18n.gettext
 
 
-@router.message(F.text == 'REFRESH')
+@router.message(F.text.in_(('REFRESH', 'ОБНОВИТЬ')))
 @router.message(Command(commands=['refresh']))
 @router.message(CommandStart())
 async def cmd_start(callback_or_message: Message or CallbackQuery, state: FSMContext):
     message = callback_or_message.message if isinstance(callback_or_message, CallbackQuery) else callback_or_message
 
-    if message.text == 'REFRESH' or any(command in message.text for command in ['/refresh']):
+    if message.text == _('refresh_command') or any(command in message.text for command in ['/refresh']):
         language = await i18n_middleware.process_event(message, state)
         if language and language.isupper():
             await set_tips_middleware()

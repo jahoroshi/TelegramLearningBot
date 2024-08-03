@@ -5,23 +5,25 @@ from aiogram.types import Message
 from app.handlers.cardmode.cardmode_start import card_mode
 # from app.middlewares import TestMiddleware
 from app.requests import send_request
-from app.services.decorators import check_card_data
+from app.utils.decorators import check_card_data
 
-
+from app.middlewares.i18n_init import i18n
 from settings import BASE_URL
 
 router = Router()
 
+_ = i18n.gettext
 
-@router.message(F.text.in_({'Again', 'Good', 'Hard', 'Easy'}))
+@router.message(F.text.in_([_(j, locale=i) for i in ('en', 'ru') for j in (_("again"), _("good"), _("hard"), _("easy"))]))
 @check_card_data
 async def set_rating(message: Message, state: FSMContext, data_store: dict = None, rating=None):
     if rating is None:
-        ratings = {'Again': 1,
-                   'Hard': 2,
-                   'Good': 3,
-                   'Easy': 4,
-                   }
+        ratings = {
+            _("again"): 1,
+            _("hard"): 2,
+            _("good"): 3,
+            _("easy"): 4,
+        }
         text = message.text
         rating = ratings[text]
     if rating == 4:

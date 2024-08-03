@@ -4,14 +4,15 @@ from aiogram.types import Message, CallbackQuery
 
 import app.keyboards as kb
 from app.handlers.cardmode.cardmode_start import card_mode_start
-from app.middlewares.locales import i18n
+from app.middlewares.i18n_init import i18n
 
 _ = i18n.gettext
 router = Router()
 
 
 @router.callback_query(F.data.startswith('choose_study_format_'))
-@router.message(F.text.in_(('Study all decks', 'Review all decks')))
+@router.message(
+    F.text.in_([_(j, locale=i) for i in ('en', 'ru') for j in (_('study_all_decks'), _('review_all_decks'))]))
 async def choose_study_format(callback_or_message: CallbackQuery or Message, state: FSMContext):
     text = _('study_format')
     if isinstance(callback_or_message, CallbackQuery):
@@ -23,7 +24,7 @@ async def choose_study_format(callback_or_message: CallbackQuery or Message, sta
         message = callback_or_message
         slug = 'alldecks'
         telegram_id = state.key.user_id
-        study_mode = f'new-{telegram_id}-all' if message.text == 'Study all decks' else f'review-{telegram_id}-all'
+        study_mode = f'new-{telegram_id}-all' if message.text == _('study_all_decks') else f'review-{telegram_id}-all'
 
         await message.answer(text=text, reply_markup=await kb.choose_study_format(slug, study_mode))
 

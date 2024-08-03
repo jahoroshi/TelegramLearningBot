@@ -48,7 +48,7 @@ def clear_current_state(func):
         current_state = await state.get_state()
         if current_state not in ('DeckViewingState:active', 'CardManage:card_ops_state', 'CardManage:is_two_sides'):
             await state.clear()
-            from app.services import DeckViewingState
+            from app.utils import DeckViewingState
             await state.set_state(DeckViewingState.active)
         return await func(*args, **kwargs)
 

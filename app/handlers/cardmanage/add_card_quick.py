@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
 import app.keyboards as kb
-from app.services import QuickAddCard, \
+from app.utils import QuickAddCard, \
     get_decks_data
 
 router = Router()
@@ -18,34 +18,6 @@ async def quick_add_card_command(message: Message, state: FSMContext):
     await state.set_state(QuickAddCard.card)
     text = '<blockquote>(сторона 1)<b>..</b>(сторона 2)\nили (сторона 1)<b>..</b>(сторона 2) <b>..</b>2\n<i>две стороны</i></blockquote>\n'
     await message.answer(text, parse_mode=ParseMode.HTML)
-
-# @router_quick_addcard_text.message()
-# async def quick_add_card_text(message: Message, state: FSMContext):
-#     await state.set_state(QuickAddCard.front_side)
-#     await quick_add_card_enter_sides(message, state, message.text)
-
-# @router.message(QuickAddCard.front_side)
-# @router.message(QuickAddCard.back_side)
-# async def quick_add_card_enter_sides(message: Message, state: FSMContext, side: str = None):
-#     if await check_sides_input(message, state, side) is False:
-#         return
-#     side = side.capitalize()
-#     data, next_state, text, keyboard = await handle_sides(state, side)
-#     await state.update_data(data)
-#     await state.set_state(next_state)
-#     await message.answer(text, reply_markup=keyboard)
-
-# @router.message(F.text == '+')
-# @router.message()
-# async def quick_add_card_command(message: Message, state: FSMContext):
-#     message_id = message.message_id
-#     chat_id = message.chat.id
-#     # msg = await bot.set_message_reaction(chat_id=chat_id, message_id=message_id, reaction=[ReactionTypeEmoji(emoji="👍")] )
-#     await message.delete()
-#     msg = await bot.send_message(chat_id=chat_id, text="Enter Side 2", reply_to_message_id=message_id-1)
-#     side1 = msg.reply_to_message.text
-#     # m = await bot.delete_message(chat_id=chat_id, message_id=msg2.message_id)
-
 
 @router.message(QuickAddCard.card)
 async def quick_add_card_choose_deck(message: Message, state: FSMContext):

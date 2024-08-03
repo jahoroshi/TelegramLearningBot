@@ -6,8 +6,8 @@ from aiogram.types import Message, CallbackQuery
 import app.keyboards as kb
 
 from app.handlers.cardmode.btns_set_rating import set_rating
-from app.services.cardmode import gen_output_text
-from app.services.decorators import check_card_data
+from app.utils.cardmode import gen_output_text
+from app.utils.decorators import check_card_data
 
 
 router = Router()

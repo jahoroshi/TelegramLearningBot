@@ -25,3 +25,447 @@ msgstr "Text"
 
 msgid "tip_message_1"
 msgstr "To create a new category, access settings, or restart the bot, click the \"Menu\" button below this message.\n👇👇👇"
+
+msgid "help_description"
+msgstr "<b><i>Добавляйте Карточки Легко и Быстро!</i></b> 🌟 Привет! 😊 Мы упростили процесс добавления карточек. Теперь вы можете быстро добавить <b>слово</b> или <b>предложение</b> из любого приложения или браузера. Просто выделите нужный текст, нажмите «Поделиться» 📤 и выберите Телеграм, чтобы отправить нашему <b>АнкиБоту</b> 🤖 .\n\n✍ Вы можете заполнить поле «<b>Добавить комментарий</b>», чтобы создать вторую сторону карточки, или оставить его пустым и добавить вторую сторону позже в окне <b>чата</b>.\n\n🧩 Как только я получу оба сообщения, я пойму, что вы хотите добавить новую карточку, и предложу выбрать подходящую <b>категорию</b> 🗂️. Всё <b>быстро</b> и <b>просто</b>! Удачи! ✨"
+
+msgid "refresh_command"
+msgstr "REFRESH"
+
+msgid "enter_front_side"
+msgstr "☝️ Enter front side\n>Or press *back* for cansel"
+
+msgid "enter_card_number_edit"
+msgstr "🔢 Enter the card number from the list:"
+
+msgid "enter_card_number_delete"
+msgstr "🔢 Enter one card number or several cards numbers from the list:"
+
+msgid "max_50_chars"
+msgstr "❕️ Message must contain maximum 50 chars."
+
+msgid "index_integer_try_again"
+msgstr "❕️ Index must be an integer. Try again."
+
+msgid "please_try_again"
+msgstr "❗️ Please try again."
+
+msgid "index_must_be_in_list"
+msgstr "❗️ Index must be in the list of cards. Try again."
+
+msgid "successfully_deleted_cards"
+msgstr "💣 Successfully deleted {0} cards."
+
+msgid "something_went_wrong"
+msgstr "❗️ Something went wrong."
+
+msgid "index_must_be_digit"
+msgstr "️️❕️ Index must be a digit. Try again."
+
+msgid "please_try_again_emoji"
+msgstr "🧸 Please try again."
+
+msgid "enter_front_side_no_emoji"
+msgstr "Enter front side:"
+
+msgid "max_255_chars"
+msgstr "⛔️ Side must be a maximum of 255 characters."
+
+msgid "side_must_contain_alnum"
+msgstr "⛔️ Side must contain one letter or one number."
+
+msgid "enter_back_side"
+msgstr "✌️ Enter back side"
+
+msgid "study_two_sides"
+msgstr "Would you like to study the two sides?"
+
+msgid "card_created"
+msgstr "Card successfully created."
+
+msgid "card_updated"
+msgstr "Card successfully updated."
+
+msgid "success_message"
+msgstr "🎊  {0}  🎊"
+
+msgid "choose_deck"
+msgstr "Choose a deck from the list below:"
+
+msgid "oops_something_went_wrong"
+msgstr "🤯🥳 Oops, something went wrong.\nPlease press the REFRESH button or try again later."
+
+msgid "import_instruction"
+msgstr "🔔 *Import instruction:*\n» Max lenght message 4096 chars\\.\n\n» Use semicolon * \\; * as separator between sides\n\n» Each card must be on a new line\\.\n\n*Example\\:*\\n>\\(_front side_\\) *\\;* \\(_back side_\\)\\n>{f\"Apple\":^14} *\\;* {f\"Яблоко\":^11}\\n>{f\"Orange\":^12} *\\;* {f\"Апельсин\":^11}\n\n_enter text or press back for cansel_"
+
+msgid "something_went_wrong"
+msgstr "❗️ Something went wrong."
+
+msgid "card_list_entry"
+msgstr "» {0}. {1}  |  {2}\n"
+
+msgid "deck_empty"
+msgstr "📂 The deck is empty."
+
+msgid "something_went_wrong"
+msgstr "❗️ Something went wrong."
+
+msgid "show_letters_button"
+msgstr "Show {0} letters"
+
+msgid "incorrect_try_again"
+msgstr "🤯🥳 Incorrect. Please try again."
+
+msgid "similar_words_not_found"
+msgstr "🤯🥳 Similar words not found. Please try again."
+
+msgid "correct_message"
+msgstr "🎉 Correct\\!"
+
+msgid "correct_answer"
+msgstr "The correct answer is 🫴 {0} 👈"
+
+msgid "again"
+msgstr "Again"
+
+msgid "hard"
+msgstr "Hard"
+
+msgid "good"
+msgstr "Good"
+
+msgid "easy"
+msgstr "Easy"
+
+msgid "try_again_error"
+msgstr "Something went wrong, try again."
+
+msgid "let's_begin"
+msgstr "Let's begin"
+
+msgid "show_back_hint"
+msgstr "_Press 'Show Back' or choose a hint_"
+
+msgid "studied"
+msgstr "studied"
+
+msgid "reviewed"
+msgstr "reviewed"
+
+msgid "congratulations"
+msgstr "🎊 Congratulations! 🎊"
+
+msgid "all_cards_studied"
+msgstr "You have {0} all your cards for today.\nYou can study another deck or wait for the next review session.\n\n"
+
+msgid "already_announced"
+msgstr "The card has already been announced."
+
+msgid "text_to_speech_error"
+msgstr "Something went wrong with converting text to speech"
+
+msgid "study_format"
+msgstr "Choose a study format:"
+
+msgid "study_all_decks"
+msgstr "Study all decks"
+
+msgid "review_all_decks"
+msgstr "Review all decks"
+
+msgid "create_deck"
+msgstr "Create deck"
+
+msgid "enter_deck_name"
+msgstr "Enter new deck's name"
+
+msgid "deck_created_successfully"
+msgstr "🎉 Deck was successfully created."
+
+msgid "something_went_wrong"
+msgstr "Something went wrong."
+
+msgid "decks"
+msgstr "Decks"
+
+msgid "back_to_decks_list"
+msgstr "Back to decks list"
+
+msgid "choose_deck_from_list"
+msgstr "Choose a deck from the list below:"
+
+msgid "deck_title"
+msgstr "📂 *{0:^50}* 📂"
+
+msgid "deck_empty_title"
+msgstr "🗃 *{0:^50}* 🗃"
+
+msgid "decks_empty_create_new"
+msgstr "Decks is empty. Please, create a new deck."
+
+msgid "error_occurred_contact_support"
+msgstr "🤯🥳 An error occurred \nIf this issue continues, please contact us through our help center at ankichat.com."
+
+msgid "oops_try_again"
+msgstr "🤯🥳 Oops, something went wrong.\nPlease press the REFRESH button or try again later."
+
+msgid "confirm_delete_deck"
+msgstr "Are you sure to delete this deck?"
+
+msgid "deck_deleted"
+msgstr "🧨 Deck was successfully deleted."
+
+msgid "something_went_wrong"
+msgstr "Something went wrong."
+
+msgid "enter_new_deck_name"
+msgstr "*Enter new deck's name*\n>Or press    *\\/back*    for cansel"
+
+msgid "max_100_chars"
+msgstr "❕️ New name must contain maximum 100 chars."
+
+msgid "deck_name_changed"
+msgstr "Deck name was successfully changed."
+
+msgid "something_went_wrong"
+msgstr "Something went wrong."
+
+msgid "name_letters_numbers"
+msgstr "Name must consist of letters or numbers. Please try again."
+
+msgid "reset_progress_confirmation"
+msgstr "♻️ Resetting your progress will clear all your study data and return all cards in this deck to their initial state.\nCards will not be removed from the deck.\nResetting only affects the current deck.\n\n❓ Do you want to proceed?"
+
+msgid "deck_reset_success"
+msgstr "♻️ Deck was successfully reset. ♻️\n_"
+
+msgid "deck_is_empty"
+msgstr "Deck is empty."
+
+msgid "something_went_wrong"
+msgstr "Something went wrong."
+
+msgid "add_card"
+msgstr "Add card"
+
+msgid "edit_card"
+msgstr "Edit card"
+
+msgid "delete_card"
+msgstr "Delete card"
+
+msgid "back_to_decks_list"
+msgstr "« Back to decks list"
+
+msgid "back_to_deck"
+msgstr "« Back to deck"
+
+msgid "yes"
+msgstr "Yes"
+
+msgid "no"
+msgstr "No"
+
+msgid "add_another_card"
+msgstr "Add another card"
+
+msgid "again"
+msgstr "Again"
+
+msgid "hard"
+msgstr "Hard"
+
+msgid "good"
+msgstr "Good"
+
+msgid "easy"
+msgstr "Easy"
+
+msgid "select_recall_level"
+msgstr "Select the recall level"
+
+msgid "show_back"
+msgstr "Show back"
+
+msgid "ask_for_hint"
+msgstr "Ask for hint"
+
+msgid "show_similar_words"
+msgstr "Show similar words"
+
+msgid "show_first_letters"
+msgstr "Show first letters"
+
+msgid "scramble_letters"
+msgstr "Scramble letters"
+
+msgid "speech_icon"
+msgstr "🔊"
+
+msgid "finish_training"
+msgstr "Finish Training"
+
+msgid "already_known"
+msgstr "Already known"
+
+msgid "study_new"
+msgstr "Study new"
+
+msgid "review_cards"
+msgstr "Review cards"
+
+msgid "show_cards"
+msgstr "Show cards"
+
+msgid "import_cards"
+msgstr "Import cards"
+
+msgid "add_card"
+msgstr "Add card"
+
+msgid "deck_manage"
+msgstr "Deck manage"
+
+msgid "back_to_decks"
+msgstr "« Back to decks"
+
+msgid "rename_deck"
+msgstr "✎ Rename deck"
+
+msgid "delete_deck"
+msgstr "× Delete deck"
+
+msgid "reset_progress"
+msgstr "Reset Progress"
+
+msgid "back_to_decks_list"
+msgstr "« Back to decks list"
+
+msgid "back_to_deck"
+msgstr "« Back to deck"
+
+msgid "reset"
+msgstr "Reset"
+
+msgid "back_to_deck_manage"
+msgstr "« Back to deck manage"
+
+msgid "delete"
+msgstr "Delete"
+
+msgid "back"
+msgstr "Back"
+
+msgid "manage"
+msgstr "manage"
+
+msgid "add_new_deck"
+msgstr "Add new deck"
+
+msgid "create_new_deck"
+msgstr "Create new deck"
+
+msgid "study_format_text"
+msgstr "Text"
+
+msgid "study_format_audio"
+msgstr "Audio"
+
+msgid "refresh"
+msgstr "REFRESH"
+
+msgid "press_to_start_studying"
+msgstr "Press to Start Studying"
+
+msgid "create_deck"
+msgstr "Create deck"
+
+msgid "review_all_decks"
+msgstr "Review all decks"
+
+msgid "study_all_decks"
+msgstr "Study all decks"
+
+msgid "next_review"
+msgstr "⏰ Next review will be in {0}h."
+
+msgid "card_will_be_available"
+msgstr "Card will be available:"
+
+msgid "deck_details_tip"
+msgstr "Добро пожаловать в управление категорией.\n🤓 Чтобы начать изучать карточки, нажмите <b>«Учить»</b>.\n🧐 Кнопка <b>«Смотреть карточки»</b> покажет все карточки в этой категории.\n🚚 Для добавления сразу множества карточек используйте кнопку <b>«Импортировать»</b>."
+
+msgid "show_cards_tip"
+msgstr "Это меню управления карточками.\nНажмите <b>«Add card»</b>, чтобы добавить новую карточку.\nКнопка <b>«Edit card»</b> позволяет изменить содержимое выбранной карточки.\nДля удаления карточки используйте кнопку <b>«Delete card»</b>."
+
+msgid "delete_card_tip"
+msgstr "Если хотите удалить одну карточку, просто введите её номер из списка. Чтобы удалить сразу несколько карточек, перечислите их номера через пробел или запятую."
+
+msgid "add_card_tip_1"
+msgstr "Мы сделали добавление карточки еще проще. Просто отправьте мне два сообщения подряд:\n\n1. В первом напишите текст, который хотите видеть на <b>лицевой стороне</b> карточки. 📝\n2. Во втором - текст для <b>обратной стороны</b>. ✨\n\nКак только я получу оба сообщения, я пойму, что вы хотите добавить новую карточку, и предложу выбрать подходящую <b>категорию</b>. Всё <b>просто</b> и <b>быстро</b>! Если у вас есть вопросы, не стесняйтесь спрашивать. Удачи! 😊\n\n<i>Пока жду ваше первое сообщение для лицевой стороны карточки!</i> ↴"
+
+msgid "add_card_tip_2"
+msgstr "🃏 Сначала введите сторону карточки, которую хотите изучать.\nОна будет показана первой в процессе изучения.\n\n🎴 Если хотите учить обе стороны карточки, укажите это в конце процесса добавления карточки."
+
+msgid "edit_card_tip"
+msgstr "Вот как вы можете изменить карточку:\n\n1. Выберите карточку, введя ее номер из списка.\n2. Введите новый текст для передней и задней сторон карточки. Если не хотите менять какую-либо сторону, просто напишите три точки (  ...  ) .\n3. Внимание: поля не могут быть пустыми. Используйте три точки для сторон без изменений.\n4. После этого вы сможете выбрать, хотите ли вы изучать обе стороны карточки.\n\nНачинаем! Пожалуйста, введите номер карточки. ⤵️"
+
+msgid "import_cards_tip"
+msgstr "В этом окне ты можешь добавить сразу несколько карточек в нужную категорию.\nПросто следуй инструкциям выше, и у тебя всё получится. 🏆"
+
+msgid "choose_study_format_tip"
+msgstr "Здесь ты можешь выбрать, как будет отображаться лицевая сторона карточки.\n🇦 Если выберешь текст, то она будет выводиться в виде текста.\n🗣️ Если выберешь звук, то лицевая сторона будет воспроизводиться голосом. Это поможет тренировать 🏋️‍♂️ восприятие на слух."
+
+msgid "start_studying_tip"
+msgstr "Это режим изучения карточек.\n🧐 Если ты уже знаешь эту карточку и не хочешь её дальше учить, нажми <b>«already known»</b> в самом низу.\n👀 Чтобы увидеть заднюю сторону карточки, нажми <b>«show back»</b>."
+
+msgid "button_show_back_tip"
+msgstr "💯 Пора оценить, насколько сложно тебе было вспомнить ответ на эту карточку. Вот как это работает:\n\n🥵 <b>Again</b>: Если было очень трудно, выбирай эту опцию.\n😤 <b>Hard</b>: Если ты вспоминал с трудом, но всё-таки вспомнил.\n🤗 <b>Good</b>: Если всё прошло гладко, но всё же пришлось немного задуматься.\n😎 <b>Easy</b>: Если ответ пришел мгновенно, как по щелчку пальцев.\n\nПосле того как оценишь, АнкиБот 🤖 сразу покажет следующую карточку. Наш умный алгоритм подберёт время для следующего показа:\n\n⏰ <b>Again, Hard, Good</b>: карточка появится в ближайшее время, чтобы освежить память.\n⏰💥 <b>Easy</b>: карточка появится снова через 24 часа или даже через несколько дней, чтобы закрепить знания. Надеюсь, ты отлично справляешься! 💪"
+
+msgid "rating_tip_1"
+msgstr "👉 Нажми <b>«show back»</b> или воспользуйся подсказкой, а затем оцени, насколько легко было вспомнить."
+
+msgid "rating_tip_2"
+msgstr "🚧 Если ты не можешь вспомнить значение карточки, не спеши нажимать «Show Back».\n🚀Попробуй воспользоваться одной из наших подсказок, чтобы немного помочь себе.\n🥇После этого оцени, насколько сложно было вспомнить ответ."
+
+msgid "addcard_command_tip"
+msgstr "Есть и другой способ добавить карточку быстрее! Просто отправьте боту два сообщения: в первом сообщении текст с лицевой стороны карточки, а во втором — текст с задней стороны. 📝✨\n\nКак только бот получит оба сообщения, он поймёт, что вы хотите добавить карточку, и предложит вам выбрать подходящую категорию. Это легко и быстро! Удачи! 😊\n\n<i>а пока продолжим ввод главной стороны карточки</i> ↴"
+
+msgid "tip"
+msgstr "Tip!"
+
+msgid "again"
+msgstr "Again"
+
+msgid "hard"
+msgstr "Hard"
+
+msgid "good"
+msgstr "Good"
+
+msgid "easy"
+msgstr "Easy"
+
+msgid "answer"
+msgstr "Answer"
+
+msgid "something_went_wrong_persistent_error"
+msgstr "🤯🥳 Something went wrong. If this issue persists please contact us through our help center at ankichat.com"
+
+msgid "correct_answer_tip"
+msgstr "T!!!!!!he correct answer is 🫴  👈"
+
+msgid "add_card_quick"
+msgstr "Add card quick"
+
+msgid "create_new_deck"
+msgstr "Create a new deck"
+
+msgid "refresh_bot"
+msgstr "Refresh the bot"
+
+msgid "manage_account_settings"
+msgstr "Manage account settings"
+
+msgid "get_help_information"
+msgstr "Get help information"

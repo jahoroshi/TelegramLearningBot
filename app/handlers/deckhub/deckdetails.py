@@ -4,9 +4,9 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
 import app.keyboards as kb
-from app.middlewares.locales import i18n
+from app.middlewares.i18n_init import i18n
 from app.requests import send_request
-from app.services import create_deck_info, clear_current_state
+from app.utils import create_deck_info, clear_current_state
 from settings import BASE_URL
 
 _ = i18n.gettext
