@@ -16,19 +16,13 @@ from settings import BASE_URL
 _ = i18n.gettext
 
 
-async def card_create_get_slug(message: Message, state: FSMContext):
-    """
-    Handler to get the slug for card creation.
-    """
-    await process_card_create_get_slug(message, state)
-
 
 async def begin_quick_card_create(message: Message, state: FSMContext):
     """
     Initiates the quick card creation process by setting the front side of the card.
     """
     side1 = message.text
-    if 2 <= len(side1) <= 255 and any(char.isalpha() for char in side1):
+    if 2 <= len(side1) <= 255 and any(char.isalpha() for char in side1) and not side1.startswith(_('next_review')[:10]):
         await state.set_state(CardManage.back_side)
         await state.update_data(card_ops_state='create', front_side=side1)
 
@@ -57,10 +51,12 @@ async def handle_card_update_delete_callback(callback: CallbackQuery, state: FSM
     """
     Handles the callback query for card update or delete operation initiation.
     """
+    slug = callback.data.split('_')[-1]
     operation = callback.data
-    text = _('enter_card_number_edit') if operation == 'edit_card' else _('enter_card_number_delete')
+    text = _('enter_card_number_edit') if operation.startswith('edit_card') else _('enter_card_number_delete')
     await callback.answer()
-    await state.set_state(CardManage.upd_list_index if operation == 'edit_card' else CardManage.del_list_index)
+    await state.set_state(CardManage.upd_list_index if operation.startswith('edit_card') else CardManage.del_list_index)
+    await callback.message.edit_reply_markup(reply_markup=await kb.back_to_decklist_or_deckdetails(slug))
     await callback.message.answer(text)
 
 
@@ -141,7 +137,8 @@ async def check_sides_input(message: Message, state: FSMContext, side: str):
     """
     Validates the input for card sides.
     """
-    if side == '...':
+
+    if side in ('..', '.', ','):
         return True
     if len(side) > 255:
         text = _('max_255_chars')
@@ -197,7 +194,7 @@ async def process_card_update_create_handler(callback: CallbackQuery, state: FSM
     slug = callback.data.split('_')[-1] if callback.data.startswith('addcard_slug_') else data.get('slug')
 
     if not slug:
-        await card_create_get_slug(callback.message, state)
+        await process_card_create_get_slug(callback.message, state)
         is_two_sides = callback.data == 'is_two_sides'
         await state.update_data(is_two_sides=is_two_sides)
         return
@@ -221,13 +218,13 @@ async def process_card_update_create_handler(callback: CallbackQuery, state: FSM
     side2 = data.get('back_side')
 
     card_data = {
-        'side1': side1 if side1 != '...' else None,
-        'side2': side2 if side2 != '...' else None,
+        'side1': side1 if side1 != '..' else None,
+        'side2': side2 if side2 != '..' else None,
         'slug': slug,
-        'is_two_sides': is_two_sides,
+        'is_two_sides': is_two_sides or False,
     }
-
-    card_data = {k: v for k, v in card_data.items() if v is not None}
+    if operation != 'create':
+        card_data = {k: v for k, v in card_data.items() if v is not None}
 
     response = await send_request(url, method=method, data=card_data)
     status = response.get('status')

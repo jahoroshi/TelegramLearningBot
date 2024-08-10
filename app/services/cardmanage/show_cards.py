@@ -27,8 +27,10 @@ async def process_show_cards(callback: CallbackQuery, state: FSMContext):
     if status == 200:
         data = response.get('data', [])
         cards_list, cards_id_index = format_cards_list(data)
-
-        if cards_list:
+        if len(cards_list) > 2000:
+            pages, indexes = await split_cards_list(cards_list, cards_id_index)
+            await process_show_cards_with_pagination(callback, state, (pages, indexes, slug))
+        elif cards_list:
             await callback.message.edit_text(cards_list, reply_markup=await kb.show_cards_action_buttons(slug))
             await state.set_state(CardManage.card_ops_state)
             await state.update_data(cards_id_index=cards_id_index, slug=slug)
@@ -76,3 +78,57 @@ def format_cards_list(data):
             cards_id_index[card_id_to_row_number[card_id]] = card_id
 
     return cards_list, cards_id_index
+
+
+async def split_cards_list(cards_list, cards_id_index):
+    count = 0
+    result_decks = []
+    result_indexes = []
+
+    one_msg = []
+    indexes_msg = {}
+    cards = cards_list.strip().split('\n')
+
+    for card in cards:
+        if count + len(card) <= 2000:
+            indx = int(card.split()[1][:-1])
+            one_msg.append(card)
+            count += len(card) + 1
+            indexes_msg.update({indx: cards_id_index[indx]})
+        else:
+            result_decks.append('\n'.join(one_msg))
+            result_indexes.append(indexes_msg)
+
+            indexes_msg = {}
+            one_msg = []
+            count = 0
+
+            indx = int(card.split()[1][:-1])
+            indexes_msg = {indx: cards_id_index[indx]}
+            one_msg.append(card)
+            count = len(card) + 1
+
+    if one_msg:
+        result_decks.append('\n'.join(one_msg))
+        result_indexes.append(indexes_msg)
+    return result_decks, result_indexes
+
+
+async def process_show_cards_with_pagination(callback: CallbackQuery, state: FSMContext, pagination_data: tuple = None):
+    if pagination_data is None:
+        page = int(callback.data.split('_')[-1])
+
+        data = await state.get_data()
+        pagination_data = data.get('pagination_data')
+        if pagination_data is None:
+            await handle_decks_list_request(callback.message, state)
+    else:
+        page = 1
+        await state.update_data({'pagination_data': pagination_data})
+    pages, indexes, slug = pagination_data
+    pagination = len(pages)
+    cards_list = pages[page - 1]
+    cards_id_index = indexes[page - 1]
+    await callback.message.edit_text(cards_list, reply_markup=await kb.show_cards_action_buttons(slug, pagination, page))
+    await state.set_state(CardManage.card_ops_state)
+    await state.update_data(cards_id_index=cards_id_index, slug=slug)

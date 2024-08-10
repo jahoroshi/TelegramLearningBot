@@ -21,14 +21,20 @@ async def process_start_command(callback_or_message: Message | CallbackQuery, st
     message = callback_or_message.message if isinstance(callback_or_message, CallbackQuery) else callback_or_message
 
     # Check if the message is a refresh command
-    if message.text == _('refresh_command') or any(command in message.text for command in ['/refresh']):
-        language = await i18n_middleware.process_event(message, state)
-        if language and language.isupper():
-            await set_tips_middleware()
+    if message.text == _('refresh_command') or any(command in message.text for command in ['/refresh', '/start']):
+        await state.clear()
 
-    # Set user commands and navigate to the decks list
+    language = await i18n_middleware.process_event(message, state)
+
+    if language and language.isupper():
+        await set_tips_middleware()
+    if language:
+        await process_to_decks_list(message, state)
+
     await set_user_commands(message)
-    await process_to_decks_list(message, state)
+
+
+
 
 
 async def process_choose_initial_language(message: Message):
@@ -84,13 +90,15 @@ async def process_set_language_callback(callback: CallbackQuery, state: FSMConte
             tips_middleware_instance.last_msg = tip_message.message_id
         else:
             await process_to_decks_list(callback, state)
+    else:
+        await process_start_command(callback, state)
 
 
 async def process_to_decks_list(callback_or_message: Message | CallbackQuery, state: FSMContext):
     """
     Navigates to the decks list.
     """
-    from app.services import handle_decks_list_request
+    from app.services.deckhub.decklist import handle_decks_list_request
     message = callback_or_message.message if isinstance(callback_or_message, CallbackQuery) else callback_or_message
     await handle_decks_list_request(message, state)
 

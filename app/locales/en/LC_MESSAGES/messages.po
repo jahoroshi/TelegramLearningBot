@@ -6,13 +6,13 @@ msgid "greeting"
 msgstr "Hi there! Great to see you! I'm your multilingual assistant!"
 
 msgid "decks"
-msgstr "My Categories"
+msgstr "My Decks"
 
 msgid "greeting_after_creating_test_deck"
-msgstr "🎁 We’ve created a test category for you to explore all the features of our app. 🤓 Once you’re familiar with it, feel free to delete it and create your own unique categories. 🫶 Good luck!"
+msgstr "👋 | WELCOME\n🎁 We’ve created a test deck for you to explore all the features of our app. \n🤓 Once you’re familiar with it, feel free to delete it and create your own unique decks. 🫶 Good luck!"
 
 msgid "create_deck_ddn"
-msgstr "Create a New Category"
+msgstr "Create a New Deck"
 
 msgid "study_format_en"
 msgstr "How would you like to study the cards: by listening or reading?"
@@ -24,10 +24,10 @@ msgid "study_format_text_en"
 msgstr "Reading"
 
 msgid "tip_message_1"
-msgstr "If you want to create a new category, access settings, or restart the bot, just hit the 'Menu' button below this message. 👇👇👇"
+msgstr "If you want to create a new deck, access settings, or restart the bot, just hit the 'Menu' button below this message.\n👇👇👇"
 
 msgid "help_description"
-msgstr "<b><i>Add Cards Easily and Quickly!</i></b> 🌟 Hi there! 😊 We’ve made adding cards super simple. You can now instantly add a <b>word</b> or <b>phrase</b> from any app or browser. Just highlight the text, tap 'Share' 📤, and choose Telegram to send it to our <b>AnkiBot</b> 🤖. ✍ In the '<b>Add a comment</b>' field, you can specify what will be on the back of the card, or leave it blank to fill it in later in the <b>chat</b>. 🧩 Once AnkiBot receives both messages, it will know you want to create a new <b>card</b> and will prompt you to select an appropriate <b>category</b> 🗂️. It’s all <b>simple</b> and <b>convenient</b>! Good luck! ✨"
+msgstr "<b><i>Add Cards Easily and Quickly!</i></b> 🌟\nHi there! 😊 We’ve made adding cards super simple.\nYou can now instantly add a <b>word</b> or <b>phrase</b> from any app or browser.\n\nJust highlight the text, tap 'Share' 📤, and choose Telegram to send it to our <b>AnkiBot</b> 🤖.\n ✍ In the '<b>Add a comment</b>' field, you can specify what will be on the back of the card, or leave it blank to fill it in later in the <b>chat</b>. \n🧩 Once AnkiBot receives both messages, it will know you want to create a new <b>card</b> and will prompt you to select an appropriate <b>deck</b> 🗂️. \nIt’s all <b>simple</b> and <b>convenient</b>!\nGood luck! ✨"
 
 msgid "refresh_command"
 msgstr "REFRESH"
@@ -51,13 +51,13 @@ msgid "index_must_be_in_list"
 msgstr "❗️ The number must be in the card list. Please try again."
 
 msgid "successfully_deleted_cards"
-msgstr "💣 Successfully deleted {0} cards!"
+msgstr "💣 Cards successfully deleted {0}"
 
 msgid "something_went_wrong"
 msgstr "❗️ Something went wrong. Let's try again."
 
 msgid "index_must_be_digit"
-msgstr "️️❕️ The number must be a digit. Please try again."
+msgstr "️️❕️ The number must be a single digit. Please try again."
 
 msgid "please_try_again_emoji"
 msgstr "🧸 Please try again, you got this!"
@@ -78,7 +78,7 @@ msgid "study_two_sides"
 msgstr "Do you want to study both sides of the card?"
 
 msgid "card_created"
-msgstr "Card successfully created! 🎉"
+msgstr "Card successfully created!"
 
 msgid "card_updated"
 msgstr "Card successfully updated! 🎉"
@@ -87,7 +87,7 @@ msgid "success_message"
 msgstr "🎊  {0}  🎊"
 
 msgid "choose_deck"
-msgstr "Choose a category from the list below:"
+msgstr "Choose a deck from the list below:"
 
 msgid "oops_something_went_wrong"
 msgstr "🤯🥳 Oops, something went wrong. Please press the REFRESH button or try again later."
@@ -99,7 +99,7 @@ msgid "card_list_entry"
 msgstr "» {0}. {1}  |  {2}\n "
 
 msgid "deck_empty"
-msgstr "There are no cards in this category yet. 🗂️ \n\nYou can add them by clicking the “Add” button. ➕\n\nYou can also send cards directly to the AnkiBot:\n1️⃣ Send two separate messages — in the first message, enter the text for the front side of the card,\n2️⃣ and in the second, enter the text for the back side. ✍️"
+msgstr "There are no cards in this deck yet. 🗂️ \n\nYou can add them by clicking the “Add” button. ➕\n\nYou can also send cards directly to the AnkiBot:\n1️⃣ Send two separate messages — in the first message, enter the text for the front side of the card,\n2️⃣ and in the second, enter the text for the back side. ✍️"
 
 msgid "show_letters_button"
 msgstr "Show {0} letters"
@@ -147,7 +147,7 @@ msgid "congratulations"
 msgstr "🎊 Congratulations! 🎊"
 
 msgid "all_cards_studied"
-msgstr "You’ve {0} all your cards for today. You can study another category or wait for the next session."
+msgstr "You’ve {0} all your cards for today. You can study another deck or wait for the next session."
 
 msgid "already_announced"
 msgstr "The card has already been shown."
@@ -159,31 +159,31 @@ msgid "study_format"
 msgstr "Choose how you'd like to study:"
 
 msgid "study_all_decks"
-msgstr "Study all categories"
+msgstr "Study all decks"
 
 msgid "review_all_decks"
-msgstr "Review all categories"
+msgstr "Review all decks"
 
 msgid "create_deck"
-msgstr "Create a category"
+msgstr "Create a deck"
 
 msgid "enter_deck_name"
-msgstr "Enter the name for the new category:"
+msgstr "Enter the name for the new deck:"
 
 msgid "deck_created_successfully"
-msgstr "🎉 Yay! Category created successfully."
+msgstr "🎉 Yay! Deck created successfully."
 
 msgid "back_to_decks_list"
-msgstr "Back to category list"
+msgstr "« Back to Decks List"
 
 msgid "choose_deck_from_list"
-msgstr "Choose a category from the list below:"
+msgstr "Choose a deck from the list below:"
 
 msgid "deck_title"
-msgstr "My Categories"
+msgstr "Decks"
 
 msgid "decks_empty_create_new"
-msgstr "No categories yet. Create a new category!"
+msgstr "No decks yet. Create a new deck!"
 
 msgid "error_occurred_contact_support"
 msgstr "🤯🥳 Oops, something went wrong. If the issue persists, please contact our support at ankichat.com."
@@ -192,31 +192,31 @@ msgid "oops_try_again"
 msgstr "🤯🥳 Oops, something went wrong. Please press the REFRESH button or try again later."
 
 msgid "confirm_delete_deck"
-msgstr "Are you sure you want to delete this category?"
+msgstr "Are you sure you want to delete this deck?"
 
 msgid "deck_deleted"
-msgstr "🧨 Category deleted successfully."
+msgstr "🧨 Deck deleted successfully."
 
 msgid "enter_new_deck_name"
-msgstr "<b><i>Enter a new category name</b></i>\n>Or press <b>back<b> to cancel"
+msgstr "<b><i>Enter a new deck name</i></b>\nOr press <i>back</i> to cancel"
 
 msgid "max_100_chars"
 msgstr "❕️ The new name should be a maximum of 100 characters."
 
 msgid "deck_name_changed"
-msgstr "Category name changed successfully."
+msgstr "ᝰ.ᐟ Deck name changed successfully."
 
 msgid "name_letters_numbers"
 msgstr "The name should consist of letters or numbers. Please try again."
 
 msgid "reset_progress_confirmation"
-msgstr "♻️ Resetting your progress will erase all study data and reset all cards in this category to their original state.\nCards will not be deleted from the category.\nThe reset affects only the current category.\n\n❓ Do you want to continue?"
+msgstr "♻️ Resetting your progress will erase all study data and reset all cards in this deck to their original state.\nCards will not be deleted from the deck.\nThe reset affects only the current deck.\n\n❓ Do you want to continue?"
 
 msgid "deck_reset_success"
-msgstr "♻️ Category successfully reset. ♻️\n_"
+msgstr "♻️ Deck successfully reset. ♻️\n_"
 
 msgid "deck_is_empty"
-msgstr "The category is empty."
+msgstr "The deck is empty."
 
 msgid "add_card"
 msgstr "Add Card"
@@ -228,7 +228,7 @@ msgid "delete_card"
 msgstr "Delete Card"
 
 msgid "back_to_deck"
-msgstr "« Back to category"
+msgstr "« Back to Deck"
 
 msgid "yes"
 msgstr "Yes"
@@ -261,10 +261,10 @@ msgid "speech_icon"
 msgstr "🔊"
 
 msgid "finish_training"
-msgstr "Finish Training"
+msgstr "「」Finish"
 
 msgid "already_known"
-msgstr "Already Known"
+msgstr "😎 Already Known"
 
 msgid "study_new"
 msgstr "Study New Cards"
@@ -279,10 +279,10 @@ msgid "import_cards"
 msgstr "Import"
 
 msgid "deck_manage"
-msgstr "Manage Category"
+msgstr "Manage Deck"
 
 msgid "back_to_decks"
-msgstr "« Back to Categories"
+msgstr "« Back to Decks"
 
 msgid "rename_deck"
 msgstr "✎ Rename"
@@ -291,7 +291,7 @@ msgid "delete_deck"
 msgstr "× Delete"
 
 msgid "reset_progress"
-msgstr "Reset Progress"
+msgstr "↻ Reset Progress"
 
 msgid "back_to_deck_manage"
 msgstr "« Go Back"
@@ -306,7 +306,7 @@ msgid "manage"
 msgstr "Manage"
 
 msgid "create_new_deck"
-msgstr "Create Category"
+msgstr "Create Deck"
 
 msgid "study_format_text"
 msgstr "Text"
@@ -318,16 +318,16 @@ msgid "refresh"
 msgstr "REFRESH"
 
 msgid "press_to_start_studying"
-msgstr "» Select"
+msgstr "༘˚⋆𐙚｡⋆𖦹.✧˚"
 
 msgid "next_review"
-msgstr "⏰ Next review in {0} hours."
+msgstr "⏰ Next review in {0} h."
 
 msgid "card_will_be_available"
 msgstr "Card will be available:"
 
 msgid "deck_details_tip"
-msgstr "Welcome to category management.\n🤓 To start studying cards, press <b>'Study'</b>.\n🧐 The <b>'Show Cards'</b> button will show all the cards in this category.\n🚚 To add multiple cards at once, use the <b>'Import'</b> button."
+msgstr "Welcome to deck management.\n🤓 To start studying cards, press <b>'Study'</b>.\n🧐 The <b>'Show Cards'</b> button will show all the cards in this deck.\n🚚 To add multiple cards at once, use the <b>'Import'</b> button."
 
 msgid "show_cards_tip"
 msgstr "This is the card management menu.\nPress <b>'Add Card'</b> to add a new card.\nThe <b>'Edit Card'</b> button allows you to change the selected card.\nTo delete a card, press <b>'Delete Card'</b>."
@@ -336,16 +336,16 @@ msgid "delete_card_tip"
 msgstr "To delete a single card, enter its number from the list. To delete multiple cards, list their numbers separated by spaces or commas."
 
 msgid "add_card_tip_1"
-msgstr "Adding a card is now easier than ever. Just send me two messages:\n\n1. The first is the text you want on the <b>front side</b> of the card. 📝\n2. The second is the text for the <b>back side</b>. ✨\n\nOnce I receive both messages, I'll understand that you want to add a card and suggest a suitable <b>category</b>. It’s all <b>simple</b> and <b>fast</b>! If you have any questions, feel free to ask. Good luck! 😊\n\n<i>I'm waiting for your first message for the front side of the card!</i> ↴"
+msgstr "Adding a card is now easier than ever. Just send me two messages:\n\n1. The first is the text you want on the <b>front side</b> of the card. 📝\n2. The second is the text for the <b>back side</b>. ✨\n\nOnce I receive both messages, I'll understand that you want to add a card and suggest a suitable <b>deck</b>. It’s all <b>simple</b> and <b>fast</b>! If you have any questions, feel free to ask. Good luck! 😊\n\n<i>I'm waiting for your first message for the front side of the card!</i> ↴"
 
 msgid "add_card_tip_2"
-msgstr "🃏 First, enter the side of the card you want to study. It will be shown first during the study.\n\n🎴 If you want to study both sides, specify this at the end of the card-adding process."
+msgstr "🃏 First, enter the side of the card you want to study. It will be shown first during the study.\n\n🎴 If you want to study both sides, specify this at the end of the card-adding process.\n👇 And now enter the first side."
 
 msgid "edit_card_tip"
-msgstr "How to edit a card:\n\n1. Select a card by entering its number from the list.\n2. Enter new text for the front and back sides. If you don’t want to change one of the sides, just write three dots ( ... ) .\n3. Note: fields cannot be empty. Use three dots for unchanged sides.\n4. After that, choose whether you want to study both sides of the card.\n\nLet's get started! Please enter the card number. ⤵️"
+msgstr "How to edit a card:\n\n1. Select a card by entering its number from the list.\n2. Enter new text for the front and back sides. If you don’t want to change one of the sides, just write two dots ( .. ) .\n3. Note: fields cannot be empty. Use three dots for unchanged sides.\n4. After that, choose whether you want to study both sides of the card.\n\nLet's get started! Please enter the card number. ⤵️"
 
 msgid "import_cards_tip"
-msgstr "Here you can add multiple cards to the desired category at once.\nFollow the instructions above, and you’ll do great. 🏆"
+msgstr "Here you can add multiple cards to the desired deck at once.\nFollow the instructions above, and you’ll do great. 🏆"
 
 msgid "choose_study_format_tip"
 msgstr "Choose how the front side of the card will be displayed.\n🇦 If you choose text, it will be shown as text.\n🗣️ If you choose sound, the front side will be voiced. This will help train auditory perception. 🏋️‍♂️"
@@ -354,7 +354,7 @@ msgid "start_studying_tip"
 msgstr "This is the card study mode.\n🧐 If you already know this card and don’t want to study it further, tap <b>'already known'</b> at the bottom.\n👀 To see the back side of the card, tap <b>'Show Answer'</b>."
 
 msgid "button_show_back_tip"
-msgstr "💯 It's time to assess how difficult it was to recall the answer on this card. Here’s how it works:\n\n🥵 <b>Again</b>: Choose this if it was very difficult.\n😤 <b>Challenging</b>: If you recalled with difficulty, but still remembered.\n🤗 <b>Good</b>: If everything went smoothly, but you had to think a bit.\n😎 <b>Easy</b>: If the answer came instantly, like a snap of your fingers.\n\nAfter the assessment, AnkiBot 🤖 will immediately show the next card. Our smart algorithm will pick the time for the next display:\n\n⏰ <b>Again, Challenging, Good</b>: The card will appear soon to refresh memory.\n⏰💥 <b>Easy</b>: The card will appear again in 24 hours or even in a few days to consolidate knowledge. Hope you’re doing great! 💪"
+msgstr "💯 It's time to assess how difficult it was to recall the answer on this card. Here’s how it works:\n\n🥵 <b>Again</b>: Choose this if it was very difficult.\n😤 <b>Hard</b>: If you recalled with difficulty, but still remembered.\n🤗 <b>Good</b>: If everything went smoothly, but you had to think a bit.\n😎 <b>Easy</b>: If the answer came instantly, like a snap of your fingers.\n\nAfter the assessment, AnkiBot 🤖 will immediately show the next card. Our smart algorithm will pick the time for the next display:\n\n⏰ <b>Again, Hard, Good</b>: The card will appear soon to refresh memory.\n⏰💥 <b>Easy</b>: The card will appear again in 24 hours or even in a few days to consolidate knowledge. Hope you’re doing great! 💪"
 
 msgid "rating_tip_1"
 msgstr "👉 Tap <b>'Show Answer'</b> or use a hint, and then assess how easy it was to recall."
@@ -363,7 +363,7 @@ msgid "rating_tip_2"
 msgstr "🚧 If you can’t remember the card’s meaning, don’t rush to tap 'Show Answer'.\n🚀 Try using one of our hints to help yourself a bit.\n🥇 After that, assess how difficult it was to recall the answer."
 
 msgid "addcard_command_tip"
-msgstr "There’s another way to add a card faster! Just send the bot two messages: the first is the text on the front side of the card, and the second is the text on the back side. 📝✨\n\nOnce the bot receives both messages, it will know you want to add a card and suggest a suitable category. It’s easy and quick! Good luck! 😊\n\n<i>In the meantime, let's continue entering the front side of the card</i> ↴"
+msgstr "There’s another way to add a card faster! Just send the bot two messages: the first is the text on the front side of the card, and the second is the text on the back side. 📝✨\n\nOnce the bot receives both messages, it will know you want to add a card and suggest a suitable deck. It’s easy and quick! Good luck! 😊\n\n<i>In the meantime, let's continue entering the front side of the card</i> ↴"
 
 msgid "tip"
 msgstr "Tip!"
@@ -415,3 +415,13 @@ msgstr "No cards for review"
 
 msgid "cards_imported_successfully"
 msgstr "⚜️ {0} cards imported successfully."
+
+msgid "empty_side"
+msgstr "no"
+
+msgid "import_cards_error"
+msgstr "🖐 You can't import because there are over 500 cards in the category. Try adding them one by one instead."
+
+msgid "reset"
+msgstr "Reset"
+

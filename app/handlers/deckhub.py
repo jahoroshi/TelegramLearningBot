@@ -42,6 +42,7 @@ async def decks_list(message: Message, state: FSMContext):
     """
     Handler for the 'back' command that calls the business logic to display the list of decks.
     """
+    await state.clear()
     await handle_decks_list_request(message, state)
 
 
@@ -50,6 +51,7 @@ async def to_decks_list(callback: CallbackQuery, state: FSMContext):
     """
     Callback handler to navigate to the list of decks.
     """
+    await state.clear()
     await handle_to_decks_list(callback, state)
 
 
@@ -58,6 +60,7 @@ async def back_to_decks_btn(callback: CallbackQuery, state: FSMContext):
     """
     Callback handler to return to the list of decks.
     """
+    await state.clear()
     await handle_back_to_decks_btn(callback, state)
 
 ### Study Format Handlers ###

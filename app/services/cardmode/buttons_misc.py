@@ -14,8 +14,9 @@ async def process_card_already_known(callback: CallbackQuery, state: FSMContext)
         callback (CallbackQuery): The callback query from the user.
         state (FSMContext): The finite state machine context for the user.
     """
+    data_store = await state.get_data()
     await callback.answer()
-    await process_set_rating(callback.message, state=state, rating=5)
+    await process_set_rating(callback.message, state=state, data_store=data_store, rating=5)
 
 
 async def process_show_back(callback: CallbackQuery, state: FSMContext, data_store: dict = None):

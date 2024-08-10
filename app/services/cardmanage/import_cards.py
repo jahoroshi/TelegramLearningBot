@@ -55,6 +55,6 @@ async def process_import_cards_handler(message: Message, state: FSMContext):
         success_count = detail.split()[0]
         text = _('cards_imported_successfully').format(success_count)
     else:
-        text = _('something_went_wrong')
+        text = _('something_went_wrong') if status != 405 else _('import_cards_error')
 
     await message.answer(text, reply_markup=await kb.back_to_decklist_or_deckdetails(slug))

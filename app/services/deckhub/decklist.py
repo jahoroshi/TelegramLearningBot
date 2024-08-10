@@ -16,7 +16,7 @@ async def handle_decks_list_request(message: Message, state: FSMContext, caller=
     """
     decks_data, status = await get_decks_data(message, state)
     deck_title = _('deck_title')
-    deck_title_txt = f'🗃 <b>{f"<i>{deck_title}</i>":^50}</b> 🗃'
+    deck_title_txt = f'📚 <b>{f"<i>{deck_title}</i>":^50}</b> 📚'
 
     if status == 200:
         # Successful retrieval of deck data
@@ -27,7 +27,7 @@ async def handle_decks_list_request(message: Message, state: FSMContext, caller=
             'reply_markup': await kb.deck_names(decks_data),
         }
         if caller == 'from back btn':
-            await message.edit_text(f'{text}', **params)
+            await message.edit_text(f'<b><i>{text}</i></b>\n', **params)
         else:
             await message.answer(
                 deck_title_txt,

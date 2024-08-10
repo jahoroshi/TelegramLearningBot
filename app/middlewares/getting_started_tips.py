@@ -16,25 +16,12 @@ logger = logging.getLogger(__name__)
 
 _ = i18n.gettext
 
+
 class GettingStartedTips(BaseMiddleware):
     def __init__(self):
         self._last_msg = 0
-        self._messages = {
-            'deck_details_': _('deck_details_tip'),
-            'show_cards_': _('show_cards_tip'),
-            'delete_card': _('delete_card_tip'),
-            'add_card_': (_('add_card_tip_1'), _('add_card_tip_2')),
-            'edit_card': _('edit_card_tip'),
-            'import_cards_': _('import_cards_tip'),
-            'choose_study_format_': _('choose_study_format_tip'),
-            'start_studying_': _('start_studying_tip'),
-            'button_show_back': _('button_show_back_tip'),
-            'rating': (_('rating_tip_1'), _('rating_tip_2')),
-            '/addcard': _('addcard_command_tip'),
-        }
-        self._tips_count = {tip: 1 for tip in self._messages}
-        self._tips_count['rating'] = 2
-        self._tips_count['add_card_'] = 2
+        self._messages = None
+        self._tips_count = None
 
     @property
     def last_msg(self):
@@ -56,6 +43,9 @@ class GettingStartedTips(BaseMiddleware):
             message = event
             trigger = event.text
 
+        if self._messages is None:
+            await self._init_messages()
+
         event_handler = await handler(event, data)
 
         self.chat_id = message.chat.id
@@ -69,7 +59,8 @@ class GettingStartedTips(BaseMiddleware):
             if self._last_msg != 0:
                 await self._delete_message()
             emoji = random.choice(('🚨', '💡', '☝️', '🚀', '🚩'))
-            msg = await message.answer(f'{emoji} {_("tip")}\n<blockquote>{tip_message}</blockquote>', parse_mode=ParseMode.HTML)
+            msg = await message.answer(f'{emoji} {_("tip")}\n<blockquote>{tip_message}</blockquote>',
+                                       parse_mode=ParseMode.HTML)
             self._last_msg = msg.message_id
 
         return event_handler
@@ -107,3 +98,21 @@ class GettingStartedTips(BaseMiddleware):
         from app.middlewares.locales import i18n_middleware
         language = await i18n_middleware.get_lang()
         await set_initial_user_language(self.telegram_id, language.lower())
+
+    async def _init_messages(self):
+        self._messages = {
+            'deck_details_': _('deck_details_tip'),
+            'show_cards_': _('show_cards_tip'),
+            'delete_card': _('delete_card_tip'),
+            'add_card_': (_('add_card_tip_1'), _('add_card_tip_2')),
+            'edit_card': _('edit_card_tip'),
+            'import_cards_': _('import_cards_tip'),
+            'choose_study_format_': _('choose_study_format_tip'),
+            'start_studying_': _('start_studying_tip'),
+            'button_show_back': _('button_show_back_tip'),
+            'rating': (_('rating_tip_1'), _('rating_tip_2')),
+            '/addcard': _('addcard_command_tip'),
+        }
+        self._tips_count = {tip: 1 for tip in self._messages}
+        self._tips_count['rating'] = 2
+        self._tips_count['add_card_'] = 2

@@ -17,6 +17,7 @@ from app.services.cardmanage import (
     process_import_cards,
     process_import_cards_handler,
     process_show_cards,
+    process_show_cards_with_pagination,
 )
 from app.states import CardManage, ImportCards
 from app.utils import check_current_state
@@ -36,7 +37,9 @@ async def quick_card_create_begin(message: Message, state: FSMContext):
     """
     Handler to begin the quick card creation process.
     """
-    await begin_quick_card_create(message, state)
+    current_state = await state.get_state()
+    if current_state != 'StartChooseLanguage:active':
+        await begin_quick_card_create(message, state)
 
 
 ### Card Creation Handlers ###
@@ -60,8 +63,8 @@ async def card_create_begin(callback: CallbackQuery, state: FSMContext):
 
 ### Card Update/Delete Handlers ###
 
-@router.callback_query(F.data == 'edit_card')
-@router.callback_query(F.data == 'delete_card')
+@router.callback_query(F.data.startswith('edit_card_'))
+@router.callback_query(F.data.startswith('delete_card_'))
 @check_current_state
 async def card_update_delete_begin(callback: CallbackQuery, state: FSMContext):
     """
@@ -135,3 +138,13 @@ async def show_cards(callback: CallbackQuery, state: FSMContext):
     Handler for showing cards in a deck.
     """
     await process_show_cards(callback, state)
+
+
+
+@router.callback_query(F.data.startswith('show_card_pag_'))
+@check_current_state
+async def show_cards_with_pagination(callback: CallbackQuery, state: FSMContext):
+    """
+    Handler for showing cards in a deck.
+    """
+    await process_show_cards_with_pagination(callback, state)

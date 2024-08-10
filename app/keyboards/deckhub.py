@@ -17,7 +17,7 @@ async def deck_names(data, is_quick_add=None):
     rows = ()
     for deck in data:
         name = deck['name']
-        keyboard.add(InlineKeyboardButton(text=f'➲ {name}', callback_data=f'{callback_prefix}_{deck["slug"]}'))
+        keyboard.add(InlineKeyboardButton(text=f'✿ {name}', callback_data=f'{callback_prefix}_{deck["slug"]}'))
     # keyboard.add(InlineKeyboardButton(text=_('create_deck_ddn'), callback_data='deck_create'))
     #
     # match len(data):

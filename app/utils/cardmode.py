@@ -9,12 +9,12 @@ _ = i18n.gettext
 def gen_output_text(card_data=None, front=None, extra_text=''):
     emoji = random.choice(('🫠', '🔅', '🔆', '🔥', '✨', '️❗️', '😊', '😂', '🎯', '✴️', '💢', '🤓', '🤔'))
     rating_names = {1: _('again'), 2: _('hard'), 3: _('good'), 4: _('easy')}
-
+    letters = 3 if i18n.current_locale == 'ru' else None
     if card_data:
         front = card_data.get("front_side")
         back = card_data.get("back_side")
         ratings_count = card_data.get("ratings_count")
-        ratings_text = " | ".join([f'{value[:3]}:  {ratings_count[str(key)]}'
+        ratings_text = " | ".join([f'{value[:letters]}:  {ratings_count[str(key)]}'
                                    for key, value in rating_names.items()]) if ratings_count else ''
 
         text = _(f'''
@@ -51,6 +51,6 @@ def gen_output_text(card_data=None, front=None, extra_text=''):
     return text if text else _("something_went_wrong_persistent_error")
 
 
-emoji = ('🌻☀️🐝', '🦋🩵💎', '(◍•ᴗ•◍)', '⋆.˚✮🎧✮˚.⋆', '😎👌🔥', '⋆⭒˚.⋆🪐 ⋆⭒˚.⋆', '✩♬ ₊˚.🎧⋆☾⋆⁺₊✧', '▶︎ •၊၊||၊|။|||| |',
+emoji = ('🌻☀️🐝🌞🍀🔱', '🦋🩵💎🧢🇦🧊', '(◍•ᴗ•◍)', '⋆.˚✮🎧✮˚.⋆', '😎👌🔥🏕️🧔‍♀️', '⋆⭒˚.⋆🪐 ⋆⭒˚.⋆', '✩♬ ₊˚.🎧⋆☾⋆⁺₊✧', '▶︎ •၊၊||၊|။|||| |',
          '𓆉𓆝𓆟 𓆞 𓆝 𓆟𓇼', '𓅰 𓅬 𓅭 𓅮 𓅯', 'ﮩ٨ـﮩﮩ٨ـ♡ﮩ٨ـﮩﮩ٨ـ', '˙✧˖°📷 ༘ ⋆｡˚', '˚ ༘ ೀ⋆｡˚', '¯\_(ツ)_/¯', 'ツ', '•ᴗ•', '◉‿◉',
          '⋆.˚🦋༘⋆', '◝(ᵔᵕᵔ)◜')

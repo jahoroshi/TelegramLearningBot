@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from pathlib import Path
 from typing import Dict, Any
@@ -20,8 +21,9 @@ class CustomI18nMiddleware(ConstI18nMiddleware):
             logger.info(f"Locale initialized: {self.locale}")
             message = event.callback_query.message if isinstance(event.callback_query, CallbackQuery) else event.message
             state = data['state']
+            has_language = None
             has_language = await self.process_event(message, state)
-            if has_language is False:
+            if not has_language:
                 return
         return await handler(event, data)
 
