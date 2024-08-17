@@ -64,7 +64,7 @@ async def delete_cards(card_id, slug):
     """
     Sends a DELETE request to remove a card from the system.
     """
-    url = f'{BASE_URL}/cards/api/v1/manage/{card_id}/'
+    url = f'{BASE_URL}/api/v1/cards/manage/{card_id}/'
     response = await send_request(url, method='DELETE', data={'slug': slug})
     return 1 if response.get('status') == 204 else 0
 
@@ -207,12 +207,12 @@ async def process_card_update_create_handler(callback: CallbackQuery, state: FSM
     if operation == 'create':
         method = 'POST'
         text = _('card_created')
-        url = f'{BASE_URL}/cards/api/v1/manage/'
+        url = f'{BASE_URL}/api/v1/cards/manage/'
     else:
         method = 'PUT'
         text = _('card_updated')
         card_id = data.get('card_id')
-        url = f'{BASE_URL}/cards/api/v1/manage/{card_id}/'
+        url = f'{BASE_URL}/api/v1/cards/manage/{card_id}/'
 
     side1 = data.get('front_side')
     side2 = data.get('back_side')

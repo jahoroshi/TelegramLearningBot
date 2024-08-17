@@ -44,7 +44,7 @@ async def process_reset_deck_progress_handler(callback: CallbackQuery, state: FS
     if current_state == ResetDeckProgress.active:
         slug = callback.data.split('_')[-1]
         telegram_id = state.key.user_id
-        url = f'{BASE_URL}/deck/api/v1/manage/reset/{telegram_id}/{slug}/'
+        url = f'{BASE_URL}/api/v1/deck/manage/reset/{telegram_id}/{slug}/'
 
         # Send a request to reset the deck progress
         response = await send_request(url, method='GET')

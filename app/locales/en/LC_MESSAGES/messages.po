@@ -9,7 +9,7 @@ msgid "decks"
 msgstr "My Decks"
 
 msgid "greeting_after_creating_test_deck"
-msgstr "👋 | WELCOME\n🎁 We’ve created a test deck for you to explore all the features of our app. \n🤓 Once you’re familiar with it, feel free to delete it and create your own unique decks. 🫶 Good luck!"
+msgstr "👋 | WELCOME\n\n🎁 We’ve created a test deck for you to explore all the features of our app. \n\n🤓 Once you’re familiar with it, feel free to delete it and create your own unique decks. \n\n<tg-spoiler>🫶 Good luck!</tg-spoiler>\n\n<tg-spoiler>😎👌🔥</tg-spoiler>"
 
 msgid "create_deck_ddn"
 msgstr "Create a New Deck"
@@ -24,7 +24,7 @@ msgid "study_format_text_en"
 msgstr "Reading"
 
 msgid "tip_message_1"
-msgstr "If you want to create a new deck, access settings, or restart the bot, just hit the 'Menu' button below this message.\n👇👇👇"
+msgstr "If you want to create a new deck, access settings, or restart the bot, just hit the 'Menu' button below this message.\n⤵️"
 
 msgid "help_description"
 msgstr "<b><i>Add Cards Easily and Quickly!</i></b> 🌟\nHi there! 😊 We’ve made adding cards super simple.\nYou can now instantly add a <b>word</b> or <b>phrase</b> from any app or browser.\n\nJust highlight the text, tap 'Share' 📤, and choose Telegram to send it to our <b>AnkiBot</b> 🤖.\n ✍ In the '<b>Add a comment</b>' field, you can specify what will be on the back of the card, or leave it blank to fill it in later in the <b>chat</b>. \n🧩 Once AnkiBot receives both messages, it will know you want to create a new <b>card</b> and will prompt you to select an appropriate <b>deck</b> 🗂️. \nIt’s all <b>simple</b> and <b>convenient</b>!\nGood luck! ✨"
@@ -381,7 +381,7 @@ msgid "refresh_bot"
 msgstr "Refresh the Bot"
 
 msgid "manage_account_settings"
-msgstr "Manage Account Settings"
+msgstr "Settings"
 
 msgid "get_help_information"
 msgstr "Help and Information"

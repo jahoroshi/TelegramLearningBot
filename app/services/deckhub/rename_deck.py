@@ -51,7 +51,7 @@ async def process_rename_deck_handler(message: Message, state: FSMContext):
     if new_name and any(char.isalnum() for char in new_name):
         new_name = new_name.capitalize().strip()
         slug = data.get('slug')
-        url = f'{BASE_URL}/deck/api/v1/manage/{slug}/'
+        url = f'{BASE_URL}/api/v1/deck/manage/{slug}/'
 
         # Send a request to rename the deck
         response = await send_request(url, method='PUT', data={'name': new_name})

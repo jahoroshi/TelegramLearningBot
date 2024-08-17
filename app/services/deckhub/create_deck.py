@@ -47,7 +47,7 @@ async def process_deck_create_handler(message: Message, state: FSMContext):
         'name': name,
         'telegram_id': telegram_id,
     }
-    url = f'{BASE_URL}/deck/api/v1/manage/'
+    url = f'{BASE_URL}/api/v1/deck/manage/'
 
     # Send a request to create the deck
     response = await send_request(url, method='POST', data=data)

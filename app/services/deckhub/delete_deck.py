@@ -46,7 +46,7 @@ async def process_deck_delete(callback: CallbackQuery, state: FSMContext):
     # Check if the current state allows for deck deletion
     if current_state == DeckDelete.active:
         slug = callback.data.split('_')[-1]
-        url = f'{BASE_URL}/deck/api/v1/manage/{slug}/'
+        url = f'{BASE_URL}/api/v1/deck/manage/{slug}/'
 
         # Send a DELETE request to remove the deck
         response = await send_request(url, method='DELETE')

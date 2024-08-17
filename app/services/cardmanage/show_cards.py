@@ -20,7 +20,7 @@ async def process_show_cards(callback: CallbackQuery, state: FSMContext):
     await callback.answer()
     slug = callback.data.split('_')[-1]
     tg_id = state.key.user_id
-    url = f'{BASE_URL}/deck/api/v1/manage/{tg_id}/{slug}/'
+    url = f'{BASE_URL}/api/v1/deck/manage/{tg_id}/{slug}/'
     response = await send_request(url, method='GET')
     status = response.get('status')
 
@@ -90,7 +90,7 @@ async def split_cards_list(cards_list, cards_id_index):
     cards = cards_list.strip().split('\n')
 
     for card in cards:
-        if count + len(card) <= 2000:
+        if count + len(card) <= 1000:
             indx = int(card.split()[1][:-1])
             one_msg.append(card)
             count += len(card) + 1

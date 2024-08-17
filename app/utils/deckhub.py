@@ -64,7 +64,7 @@ async def delete_two_messages(callback: CallbackQuery):
 
 async def get_decks_data(message: Message, state: FSMContext):
     tg_id = state.key.user_id if state else message.from_user.id
-    get_decks_url = f'{BASE_URL}/deck/api/v1/manage/{tg_id}/'
+    get_decks_url = f'{BASE_URL}/api/v1/deck/manage/{tg_id}/'
     response = await send_request(get_decks_url)
     decks_data = response.get('data')
     status = response.get('status')

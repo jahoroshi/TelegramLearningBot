@@ -7,8 +7,9 @@ from aiogram.types import CallbackQuery, Message
 import app.keyboards as kb
 from app.middlewares.locales import i18n, i18n_middleware
 from app.requests import send_request
+from app.states import StartChooseLanguage
 from app.utils import set_user_commands, set_initial_user_language
-from app.utils.middleware import set_tips_middleware
+# from app.utils.middleware import start_tips_middleware
 from settings import BASE_URL
 
 _ = i18n.gettext
@@ -20,28 +21,22 @@ async def process_start_command(callback_or_message: Message | CallbackQuery, st
     """
     message = callback_or_message.message if isinstance(callback_or_message, CallbackQuery) else callback_or_message
 
-    # Check if the message is a refresh command
     if message.text == _('refresh_command') or any(command in message.text for command in ['/refresh', '/start']):
-        await state.clear()
-
-    language = await i18n_middleware.process_event(message, state)
-
-    if language and language.isupper():
-        await set_tips_middleware()
-    if language:
-        await process_to_decks_list(message, state)
+        current_state = await state.get_state()
+        if current_state != 'StartChooseLanguage:active':
+            await state.clear()
 
     await set_user_commands(message)
+    await process_to_decks_list(message, state)
 
 
 
 
 
-async def process_choose_initial_language(message: Message):
+async def process_choose_initial_language(message: Message, user_language: str):
     """
     Prompts the user to choose the initial language.
     """
-    user_language = message.from_user.language_code
     messages = {
         'ru': 'Нажмите продолжить, если ваш язык русский',
         'en': 'Press continue if your language is English'
@@ -69,25 +64,25 @@ async def process_set_language_callback(callback: CallbackQuery, state: FSMConte
         await state.clear()
 
         # Set initial user language
+        await i18n_middleware.set_locale(telegram_id, language.upper())
         response = await set_initial_user_language(telegram_id, language.upper())
         if response.get('status') != 200:
             await process_to_decks_list(callback, state)
             return
 
         # Send request to fill the initial deck
-        url = f'{BASE_URL}/deck/api/v1/manage/first_filling/{telegram_id}/{language}'
+        url = f'{BASE_URL}/api/v1/deck/manage/first_filling/{telegram_id}/{language}'
         response = await send_request(url, method='GET')
         if response and response.get('status') == 201:
-            tips_middleware_instance = await set_tips_middleware()
-            await callback.message.answer(_('greeting_after_creating_test_deck'))
+            await callback.message.answer(_('greeting_after_creating_test_deck'), parse_mode=ParseMode.HTML)
             await asyncio.sleep(5)
 
             # Navigate to the decks list
             await process_to_decks_list(callback, state)
 
             # Send the first tip message
-            tip_message = await callback.message.answer(_('tip_message_1'))
-            tips_middleware_instance.last_msg = tip_message.message_id
+            tip_message = await callback.message.answer(_('tip_message_1'), parse_mode=ParseMode.HTML)
+            i18n_middleware.tip_mode.last_msg = (tip_message.message_id, telegram_id)
         else:
             await process_to_decks_list(callback, state)
     else:

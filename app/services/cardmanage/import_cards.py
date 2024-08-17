@@ -45,7 +45,7 @@ async def process_import_cards_handler(message: Message, state: FSMContext):
         'cards_separator_custom': '',
     }
 
-    url = f'{BASE_URL}/cards/api/v1/import_cards/{slug}/'
+    url = f'{BASE_URL}/api/v1/cards/import_cards/{slug}/'
     response = await send_request(url, method='POST', data=cards_data)
     status = response.get('status')
 

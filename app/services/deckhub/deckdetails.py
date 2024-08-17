@@ -28,7 +28,7 @@ async def process_deck_details(callback_or_message: CallbackQuery or Message, st
         message = callback_or_message
 
     # Build the request URL and fetch deck details
-    url = f'{BASE_URL}/deck/api/v1/manage/{slug}/'
+    url = f'{BASE_URL}/api/v1/deck/manage/{slug}/'
     response = await send_request(url)
 
     # If the request is successful, process and display the deck details

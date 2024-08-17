@@ -41,10 +41,10 @@ async def process_card_mode_start(message: Message, state: FSMContext, slug: Opt
             tg_id = state.key.user_id
 
             if not slug and not study_mode:
-                start_url = f'{BASE_URL}/study/api/v1/get_start_config/{tg_id}/'
+                start_url = f'{BASE_URL}/api/v1/study/get_start_config/{tg_id}/'
             else:
                 start_url = \
-                    f'{BASE_URL}/study/api/v1/get_start_config/{slug}/{study_mode}/{study_format}/{tg_id}/'
+                    f'{BASE_URL}/api/v1/study/get_start_config/{slug}/{study_mode}/{study_format}/{tg_id}/'
 
             response = await send_request(start_url)
             start_config = response.get('data')
