@@ -16,6 +16,8 @@ from app.services.bot import (
     process_to_decks_list,
     process_cmd_a,
 )
+from app.services.bot.account_settings import process_account_settings, process_change_language, \
+    process_change_language_handler
 
 # Initialize routers
 router = Router()
@@ -47,7 +49,7 @@ async def cmd_a(message: Message, state: FSMContext):
     """
     Handler for the 'a' command to send a formatted text message.
     """
-    await process_cmd_a(message)
+    await process_cmd_a(message, state)
 
 
 @router.callback_query(F.data.startswith('set_language_'))
@@ -63,3 +65,16 @@ async def to_decks_list(callback: CallbackQuery, state: FSMContext):
     Navigate to the decks list.
     """
     await process_to_decks_list(callback, state)
+
+
+@router.message(Command(commands=['settings']))
+async def account_settings(message: Message, state: FSMContext):
+    await process_account_settings(message, state)
+
+@router.callback_query(F.data == 'change_language')
+async def change_language(callback: CallbackQuery, state: FSMContext):
+    await process_change_language(callback, state)
+
+@router.callback_query(F.data.startswith('new_language_'))
+async def change_language_handler(callback: CallbackQuery, state: FSMContext):
+    await process_change_language_handler(callback, state)

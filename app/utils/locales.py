@@ -3,7 +3,7 @@ from settings import BASE_URL
 
 
 # async def get_language_or_create_user(telegram_id: int, telegram_username: str) -> str or None:
-#     url = f'{BASE_URL}/api/v1/users/manage/{telegram_id}/?username={telegram_username}'
+#     url = f'{BASE_URL}/api/v1/users/manage/tg/{telegram_id}/?username={telegram_username}'
 #     response = await send_request(url, method='GET')
 #     status = response.get('status')
 #     if status == 200:
@@ -14,7 +14,7 @@ from settings import BASE_URL
 #         return 'en'
 #
 # async def get_language(telegram_id: int) -> str or None:
-#     url = f'{BASE_URL}/api/v1/users/manage/{telegram_id}/'
+#     url = f'{BASE_URL}/api/v1/users/manage/tg/{telegram_id}/'
 #     response = await send_request(url, method='GET')
 #     status = response.get('status')
 #     if status == 200:
@@ -26,7 +26,7 @@ from settings import BASE_URL
 
 
 async def get_or_create_user(telegram_id: int, telegram_username: str) -> str or None:
-    url = f'{BASE_URL}/api/v1/users/manage/{telegram_id}/?username={telegram_username}'
+    url = f'{BASE_URL}/api/v1/users/manage/tg/{telegram_id}/?username={telegram_username}'
     response = await send_request(url, method='GET')
     status = response.get('status')
     if isinstance(status, int) and status // 100 == 2:

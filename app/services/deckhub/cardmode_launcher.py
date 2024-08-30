@@ -7,6 +7,22 @@ from app.middlewares.i18n_init import i18n
 
 _ = i18n.gettext
 
+async def process_choose_study_client(callback_or_message: CallbackQuery or Message, state: FSMContext):
+    text = _('study_format')
+
+    # Check if the input is a callback query
+    if isinstance(callback_or_message, CallbackQuery):
+        slug, study_mode = callback_or_message.data.split('_')[-2:]
+        message = callback_or_message.message
+        await message.edit_text(text=text, reply_markup=await kb.choose_study_format(slug, study_mode))
+
+    else:
+        message = callback_or_message
+        slug = 'alldecks'
+        telegram_id = state.key.user_id
+        study_mode = f'new-{telegram_id}-all' if message.text == _('study_all_decks') else f'review-{telegram_id}-all'
+
+        await message.answer(text=text, reply_markup=await kb.choose_study_format(slug, study_mode))
 
 async def process_choose_study_format(callback_or_message: CallbackQuery or Message, state: FSMContext):
     """

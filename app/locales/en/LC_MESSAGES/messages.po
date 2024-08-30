@@ -2,6 +2,21 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
+msgid "account_settings"
+msgstr "⚡🔧 Customize your account: select a <i>setting</i> to change."
+
+msgid "change_language"
+msgstr "Change Language"
+
+msgid "language_selection"
+msgstr "👅 Please select the <i>language</i> you want to use for the interface:"
+
+msgid "language_changed_success"
+msgstr "🏆🎯💎 The interface <i>language</i> has been successfully changed."
+
+msgid "language_changed_failure"
+msgstr "🤷‍♂️ Failed to change the interface <i>language</i>. Please try again."
+
 msgid "greeting"
 msgstr "Hi there! Great to see you! I'm your multilingual assistant!"
 
@@ -353,8 +368,11 @@ msgstr "Choose how the front side of the card will be displayed.\n🇦 If you ch
 msgid "start_studying_tip"
 msgstr "This is the card study mode.\n🧐 If you already know this card and don’t want to study it further, tap <b>'already known'</b> at the bottom.\n👀 To see the back side of the card, tap <b>'Show Answer'</b>."
 
-msgid "button_show_back_tip"
-msgstr "💯 It's time to assess how difficult it was to recall the answer on this card. Here’s how it works:\n\n🥵 <b>Again</b>: Choose this if it was very difficult.\n😤 <b>Hard</b>: If you recalled with difficulty, but still remembered.\n🤗 <b>Good</b>: If everything went smoothly, but you had to think a bit.\n😎 <b>Easy</b>: If the answer came instantly, like a snap of your fingers.\n\nAfter the assessment, AnkiBot 🤖 will immediately show the next card. Our smart algorithm will pick the time for the next display:\n\n⏰ <b>Again, Hard, Good</b>: The card will appear soon to refresh memory.\n⏰💥 <b>Easy</b>: The card will appear again in 24 hours or even in a few days to consolidate knowledge. Hope you’re doing great! 💪"
+msgid "button_show_back_tip_1"
+msgstr "💯 It's time to assess how difficult it was to recall the answer on this card. Here’s how it works:\n\n🥵 <b>Again</b>: Choose this if it was very difficult.\n😤 <b>Hard</b>: If you recalled with difficulty, but still remembered.\n🤗 <b>Good</b>: If everything went smoothly, but you had to think a bit.\n😎 <b>Easy</b>: If the answer came instantly, like a snap of your fingers."
+
+msgid "button_show_back_tip_2"
+msgstr "After the assessment, our smart algorithm 🤖 will pick the time for the next display:\n\n⏰ <b>Again, Hard, Good</b>: The card will appear soon to refresh memory.\n⏰💥 <b>Easy</b>: The card will appear again in 24 hours or even in a few days to consolidate knowledge. Hope you’re doing great! 💪"
 
 msgid "rating_tip_1"
 msgstr "👉 Tap <b>'Show Answer'</b> or use a hint, and then assess how easy it was to recall."

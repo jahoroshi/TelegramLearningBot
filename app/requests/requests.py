@@ -45,7 +45,6 @@ async def send_request(url, method='GET', data=None):
     except aiohttp.ClientError as e:
         text = f'>> aiohttp.ClientError in {__name__}\n>> Client Error: {e}\n>> Url: {url}'
         logging.error(text)
-        print(text)
         return {'status': 'error', 'error_detail': text}
     except Exception as e:
         text = f'>> General Error in {__name__}\n>> Client Error: {e}\n>> Url: {url}'

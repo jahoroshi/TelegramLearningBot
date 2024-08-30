@@ -50,7 +50,6 @@ async def manage_deck(deck):
         rows.insert(0, 1)
     keyboard.add(InlineKeyboardButton(text=_('show_cards'), callback_data=f'show_cards_{slug}'))
     keyboard.add(InlineKeyboardButton(text=_('import_cards'), callback_data=f'import_cards_{slug}'))
-    # keyboard.add(InlineKeyboardButton(text=_('add_card'), callback_data=f'add_card_{slug}'))
     keyboard.add(InlineKeyboardButton(text=_('deck_manage'), callback_data=f'manage_deck_edit_del_{slug}'))
     keyboard.add(InlineKeyboardButton(text=_('back_to_decks'), callback_data=f'back_to_decks'))
     return keyboard.adjust(*rows).as_markup()

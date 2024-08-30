@@ -19,6 +19,7 @@ from app.services.cardmode import (
     process_card_mode,
     process_text_to_speech,
 )
+from app.services.cardmode.ask_chatgpt import process_ask_for_hint_chatgpt
 from app.utils.decorators import check_card_data
 
 # Initialize router
@@ -134,3 +135,11 @@ async def text_to_speech(callback: CallbackQuery, state: FSMContext, data_store:
     This handler is triggered when the user requests to hear the text-to-speech conversion of the card.
     """
     await process_text_to_speech(callback, state, data_store)
+
+@router.callback_query(F.data == 'button_show_hint')
+@check_card_data
+async def ask_for_hint_chatgpt(callback: CallbackQuery, state: FSMContext, data_store: dict = None):
+
+    await process_ask_for_hint_chatgpt(callback, state, data_store)
+
+

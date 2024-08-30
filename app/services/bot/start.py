@@ -2,7 +2,8 @@ import asyncio
 
 from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import CallbackQuery, Message, InlineKeyboardButton, WebAppInfo
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 import app.keyboards as kb
 from app.middlewares.locales import i18n, i18n_middleware
@@ -98,7 +99,7 @@ async def process_to_decks_list(callback_or_message: Message | CallbackQuery, st
     await handle_decks_list_request(message, state)
 
 
-async def process_cmd_a(message: Message):
+async def process_cmd_a(message: Message, state: FSMContext):
     """
     Sends a formatted text message when the 'a' command is triggered.
     """
@@ -118,4 +119,7 @@ async def process_cmd_a(message: Message):
         <blockquote>Block quotation started\nBlock quotation continued\nThe last line of the block quotation</blockquote>
         <blockquote expandable>Expandable block quotation started\nExpandable block quotation continued\nExpandable block quotation continued\nHidden by default part of the block quotation started\nExpandable block quotation continued\nThe last line of the block quotation</blockquote>
     '''
-    await message.answer(text, parse_mode=ParseMode.HTML)
+    telegram_id = state.key.user_id
+    keyboard = InlineKeyboardBuilder()
+    keyboard.add(InlineKeyboardButton(text="Перейти", web_app=WebAppInfo(url=f'https://jahoroshi4y.pagekite.me/api/v1/study/web_app/{telegram_id}?mode=new&slug=newsuper')))
+    await message.answer(text, parse_mode=ParseMode.HTML, reply_markup=keyboard.as_markup())

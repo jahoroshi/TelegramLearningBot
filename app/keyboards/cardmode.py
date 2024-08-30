@@ -38,6 +38,7 @@ async def card_mode_buttons(buttons, update_names=None, order_scheme=None, is_fi
         button_names.update(update_names)
     if order_scheme:
         buttons = {name: buttons.get(name, False) for name in order_scheme}
+
     for name, status in buttons.items():
         if status:
             keyboard.add(InlineKeyboardButton(text=button_names.get(name, name), callback_data=f'button_{name}'))

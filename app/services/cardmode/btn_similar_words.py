@@ -21,9 +21,13 @@ async def process_show_similar(callback: CallbackQuery, state: FSMContext, data_
         data_store (dict, optional): The data store containing card information. Defaults to None.
     """
     card_data = data_store.get('card_data')
-    url_similar_words = data_store.get('start_config', {}).get('urls', {}).get('get_similar_words', '')
+    url_similar_words = data_store.get('start_config', {}).get('urls', {}).get('get_similar_with_telegram_id', '')
     mappings_id = card_data.get('mappings_id', '')
-    url = url_similar_words.replace('dummy_mappings_id', str(mappings_id))
+    telegram_id = state.key.user_id
+
+    url = url_similar_words.replace('dummy_mappings_id', str(mappings_id)).replace(
+        'dummy_telegram_id', str(telegram_id)
+    )
 
     # Send request to get similar words
     response = await send_request(f"{BASE_URL}{url}")

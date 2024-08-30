@@ -1,4 +1,7 @@
 import asyncio
+
+from aiogram.enums import ParseMode
+
 import app.keyboards as kb
 
 from aiogram.fsm.context import FSMContext
@@ -9,7 +12,7 @@ from app.middlewares.i18n_init import i18n
 _ = i18n.gettext
 
 async def display_message_and_redirect(message: Message, state: FSMContext, text):
-    await message.answer(text, reply_markup=kb.refresh_button)
+    await message.answer(text, parse_mode=ParseMode.HTML)
     await asyncio.sleep(1.5)
     from app.services import handle_decks_list_request
     await handle_decks_list_request(message, state)

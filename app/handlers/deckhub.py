@@ -7,6 +7,7 @@ from aiogram.types import Message, CallbackQuery
 
 import app.keyboards as kb
 from app.middlewares.i18n_init import i18n
+from app.services import process_choose_study_client
 from app.services.deckhub import (
     handle_decks_list_request,
     handle_to_decks_list,
@@ -63,12 +64,25 @@ async def back_to_decks_btn(callback: CallbackQuery, state: FSMContext):
     await state.clear()
     await handle_back_to_decks_btn(callback, state)
 
-### Study Format Handlers ###
+### Start Studying Handlers ###
 
-@router.callback_query(F.data.startswith('choose_study_format_'))
+@router.callback_query(F.data.startswith('choose_study_client_'))
 @router.message(
     F.text.in_([_(j, locale=i) for i in ('en', 'ru') for j in ('study_all_decks', 'review_all_decks')])
 )
+async def choose_study_client(callback_or_message: CallbackQuery or Message, state: FSMContext):
+    """
+    Handler for mode selection.
+
+    This handler is triggered when the user selects a web-app or chat option.
+    """
+    await process_choose_study_client(callback_or_message, state)
+
+
+@router.callback_query(F.data.startswith('choose_study_format_'))
+# @router.message(
+#     F.text.in_([_(j, locale=i) for i in ('en', 'ru') for j in ('study_all_decks', 'review_all_decks')])
+# )
 async def choose_study_format(callback_or_message: CallbackQuery or Message, state: FSMContext):
     """
     Handler for choosing the study format.
