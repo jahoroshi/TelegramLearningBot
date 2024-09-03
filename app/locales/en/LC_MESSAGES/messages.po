@@ -6,7 +6,7 @@ msgid "deck_details_error"
 msgstr "We did not receive the data. Please, try again."
 
 msgid "deck_name_length"
-msgstr "The deck\'s name should be a maximum of 25 characters. Please try again."
+msgstr "The deck's name should be a maximum of 25 characters. Please try again."
 
 msgid "study_client_web_app"
 msgstr "Telegram App"
