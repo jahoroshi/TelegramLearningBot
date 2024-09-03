@@ -2,6 +2,24 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
+msgid "deck_details_error"
+msgstr "We did not receive the data. Please, try again."
+
+msgid "deck_name_length"
+msgstr "The deck\'s name should be a maximum of 25 characters. Please try again."
+
+msgid "study_client_web_app"
+msgstr "Telegram App"
+
+msgid "study_client_chat"
+msgstr "Chat with Bot"
+
+msgid "choose_study_client"
+msgstr "<i>Choose Your Learning Mode:</i>"
+
+msgid "choose_study_client_tip"
+msgstr "🤔💭 <b>Select Your Flashcard Study Method</b>\n\nWelcome! Here you can choose the study mode that works best for you.\n\nThere are two options available:\n1. <b>Telegram App</b> 👨‍💻: Study flashcards using the integrated Telegram app with a <i>graphical interface.</i>\n\n2. <b>Chat with Bot</b> 🤡: Learn directly in a chat with the bot, without switching to a separate app.\n\nChoose your preferred option to get started."
+
 msgid "account_settings"
 msgstr "⚡🔧 Customize your account: select a <i>setting</i> to change."
 

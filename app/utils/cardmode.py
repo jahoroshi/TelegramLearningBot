@@ -31,6 +31,7 @@ def gen_output_text(card_data=None, front=None, extra_text=''):
 
 
 
+
 {ratings_text}
 ''')
 

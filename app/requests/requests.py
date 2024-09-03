@@ -1,7 +1,10 @@
 import logging
-
 import aiohttp
+import os
 
+from dotenv import load_dotenv
+
+load_dotenv()
 
 async def response_handler(response):
     if response.status // 100 == 2:
@@ -24,7 +27,7 @@ async def response_handler(response):
 
 async def send_request(url, method='GET', data=None):
     headers = {
-        'X-API-Key': 'your-unique-api-key-here',
+        'X-API-Key': os.getenv("SERVER-TOKEN"),
         'Content-Type': 'application/json'
     }
     try:

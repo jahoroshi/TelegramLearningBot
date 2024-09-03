@@ -1,10 +1,15 @@
+import os
 from datetime import datetime
 
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, WebAppInfo
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from app.middlewares.i18n_init import i18n
+from settings import BASE_URL
 
+from dotenv import load_dotenv
+
+load_dotenv()
 _ = i18n.gettext
 
 
@@ -43,10 +48,10 @@ async def manage_deck(deck):
     rows = [2, 2]
 
     if new_cards_count:
-        keyboard.add(InlineKeyboardButton(text=_('study_new'), callback_data=f'choose_study_format_{slug}_new'))
+        keyboard.add(InlineKeyboardButton(text=_('study_new'), callback_data=f'choose_study_client_{slug}_new'))
         rows.insert(0, 1)
     if reviews_count:
-        keyboard.add(InlineKeyboardButton(text=_('review_cards'), callback_data=f'choose_study_format_{slug}_review'))
+        keyboard.add(InlineKeyboardButton(text=_('review_cards'), callback_data=f'choose_study_client_{slug}_review'))
         rows.insert(0, 1)
     keyboard.add(InlineKeyboardButton(text=_('show_cards'), callback_data=f'show_cards_{slug}'))
     keyboard.add(InlineKeyboardButton(text=_('import_cards'), callback_data=f'import_cards_{slug}'))
@@ -122,13 +127,39 @@ async def create_new_deck():
     keyboard.add(InlineKeyboardButton(text=_('create_new_deck'), callback_data=f'deck_create'))
     return keyboard.as_markup()
 
+async def choose_study_format(slug, study_mode, study_client):
+    keyboard = InlineKeyboardBuilder()
+    rows = (2,)
+    text_mode_params = {'text': _('study_format_text')}
+    audio_mode_params = {'text': _('study_format_audio')}
+    if 'web_app' in study_client:
+        telegram_id = study_client['web_app']
+        url = '{}/api/v1/study/web_app/{}?mode={}&slug={}&format={}' + f'&api-key={os.getenv("SERVER-TOKEN")}'
+        text_mode_params.update({'web_app': WebAppInfo(url=url.format(BASE_URL, telegram_id, study_mode, slug, 'text'))})
+        audio_mode_params.update({'web_app': WebAppInfo(url=url.format(BASE_URL, telegram_id, study_mode, slug, 'audio'))})
+        btn1, btn2 = await back_to_decklist_or_deckdetails_btns(slug)
+    else:
+        text_mode_params.update({'callback_data': f'start_studying_{slug}_{study_mode}_text'})
+        audio_mode_params.update({'callback_data': f'start_studying_{slug}_{study_mode}_audio'})
 
-async def choose_study_format(slug, study_mode):
+    keyboard.add(
+        InlineKeyboardButton(**text_mode_params))
+    if 'callback_data' in audio_mode_params:
+        keyboard.add(
+            InlineKeyboardButton(**audio_mode_params))
+
+    if 'btn2' in locals():
+        keyboard.add(btn2)
+        rows = (1, 1)
+    return keyboard.adjust(*rows).as_markup()
+
+
+async def choose_study_client(slug, study_mode):
     keyboard = InlineKeyboardBuilder()
     keyboard.add(
-        InlineKeyboardButton(text=_('study_format_text'), callback_data=f'start_studying_{slug}_{study_mode}_text'))
+        InlineKeyboardButton(text=_('study_client_web_app'), callback_data=f'choose_format_{slug}_{study_mode}_webapp'))
     keyboard.add(
-        InlineKeyboardButton(text=_('study_format_audio'), callback_data=f'start_studying_{slug}_{study_mode}_audio'))
+        InlineKeyboardButton(text=_('study_client_chat'), callback_data=f'choose_format_{slug}_{study_mode}_chat'))
     return keyboard.adjust(2).as_markup()
 
 

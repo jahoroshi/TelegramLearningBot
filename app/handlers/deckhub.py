@@ -79,17 +79,14 @@ async def choose_study_client(callback_or_message: CallbackQuery or Message, sta
     await process_choose_study_client(callback_or_message, state)
 
 
-@router.callback_query(F.data.startswith('choose_study_format_'))
-# @router.message(
-#     F.text.in_([_(j, locale=i) for i in ('en', 'ru') for j in ('study_all_decks', 'review_all_decks')])
-# )
-async def choose_study_format(callback_or_message: CallbackQuery or Message, state: FSMContext):
+@router.callback_query(F.data.startswith('choose_format_'))
+async def choose_study_format(callback: CallbackQuery, state: FSMContext):
     """
     Handler for choosing the study format.
 
     This handler is triggered when the user selects a study or review option.
     """
-    await process_choose_study_format(callback_or_message, state)
+    await process_choose_study_format(callback, state)
 
 
 @router.callback_query(F.data.startswith('start_studying_'))

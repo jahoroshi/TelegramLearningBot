@@ -1,3 +1,4 @@
+from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
@@ -8,13 +9,13 @@ from app.middlewares.i18n_init import i18n
 _ = i18n.gettext
 
 async def process_choose_study_client(callback_or_message: CallbackQuery or Message, state: FSMContext):
-    text = _('study_format')
 
-    # Check if the input is a callback query
+    text = _('choose_study_client')
+
     if isinstance(callback_or_message, CallbackQuery):
         slug, study_mode = callback_or_message.data.split('_')[-2:]
         message = callback_or_message.message
-        await message.edit_text(text=text, reply_markup=await kb.choose_study_format(slug, study_mode))
+        await message.edit_text(text=text, reply_markup=await kb.choose_study_client(slug, study_mode), parse_mode=ParseMode.HTML)
 
     else:
         message = callback_or_message
@@ -22,31 +23,23 @@ async def process_choose_study_client(callback_or_message: CallbackQuery or Mess
         telegram_id = state.key.user_id
         study_mode = f'new-{telegram_id}-all' if message.text == _('study_all_decks') else f'review-{telegram_id}-all'
 
-        await message.answer(text=text, reply_markup=await kb.choose_study_format(slug, study_mode))
+        await message.answer(text=text, reply_markup=await kb.choose_study_client(slug, study_mode), parse_mode=ParseMode.HTML)
 
-async def process_choose_study_format(callback_or_message: CallbackQuery or Message, state: FSMContext):
-    """
-    Processes the user's choice of study format and updates the message or sends a new message accordingly.
+async def process_choose_study_format(callback: CallbackQuery, state: FSMContext):
 
-    Args:
-        callback_or_message (CallbackQuery or Message): The callback query or message object from the user.
-        state (FSMContext): The finite state machine context for the user.
-    """
     text = _('study_format')
 
-    # Check if the input is a callback query
-    if isinstance(callback_or_message, CallbackQuery):
-        slug, study_mode = callback_or_message.data.split('_')[-2:]
-        message = callback_or_message.message
-        await message.edit_text(text=text, reply_markup=await kb.choose_study_format(slug, study_mode))
 
-    else:
-        message = callback_or_message
-        slug = 'alldecks'
+    slug, study_mode, client = callback.data.split('_')[-3:]
+    if client == 'webapp':
         telegram_id = state.key.user_id
-        study_mode = f'new-{telegram_id}-all' if message.text == _('study_all_decks') else f'review-{telegram_id}-all'
+        study_client = {'web_app': telegram_id}
+    else:
+        study_client = {'chat': None}
 
-        await message.answer(text=text, reply_markup=await kb.choose_study_format(slug, study_mode))
+    message = callback.message
+    await message.edit_text(text=text, reply_markup=await kb.choose_study_format(slug, study_mode, study_client))
+
 
 
 async def process_launch_card_mode(callback: CallbackQuery, state: FSMContext):

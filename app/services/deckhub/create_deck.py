@@ -42,6 +42,12 @@ async def process_deck_create_handler(message: Message, state: FSMContext):
     name = message.text
     telegram_id = state.key.user_id
 
+    if len(name) > 25:
+        text = _('deck_name_length')
+
+        # Display the message and redirect the user
+        await display_message_and_redirect(message, state, text)
+
     # Prepare the request data for deck creation
     data = {
         'name': name,
