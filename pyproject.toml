@@ -49,7 +49,6 @@ platformdirs = "4.2.2"
 poetry = "1.8.3"
 poetry-core = "1.9.0"
 poetry-plugin-export = "1.8.0"
-psycopg2 = "2.9.9"
 ptyprocess = "0.7.0"
 pycparser = "2.22"
 pydantic = "2.7.4"
@@ -72,6 +71,8 @@ zipp = "3.19.2"
 pydub = "^0.25.1"
 humanize = "^4.10.0"
 i18n = "^0.2"
+gunicorn = "^23.0.0"
+uvicorn = "^0.30.6"
 
 
 [build-system]
