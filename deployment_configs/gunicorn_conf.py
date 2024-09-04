@@ -1,4 +1,4 @@
-bind = "0.0.0.0:8000"
+bind = "0.0.0.0:8001"
 workers = 3
 user = "ubuntu"
 loglevel = "info"
