@@ -8,4 +8,4 @@ if lsof -i :$PORT > /dev/null; then
     sleep 2
 fi
 
-exec /home/ubuntu/.cache/pypoetry/virtualenvs/ankichat-IcZeuUhH-py3.12/bin/gunicorn --workers 3 --bind 0.0.0.0:8000 -c /home/ubuntu/ankichat/deployment_configs/gunicorn.conf -k uvicorn.workers.UvicornWorker asgi:application
+exec /home/ubuntu/.cache/pypoetry/virtualenvs/ankichat-IcZeuUhH-py3.12/bin/gunicorn --workers 1 --bind 0.0.0.0:8000 -c /home/ubuntu/ankichat/deployment_configs/gunicorn.conf -k uvicorn.workers.UvicornWorker asgi:application
