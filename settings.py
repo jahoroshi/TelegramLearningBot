@@ -8,3 +8,4 @@ load_dotenv()
 
 # Get the BASE_URL from environment variables
 BASE_URL = f'http://{os.getenv("BASE_URL")}'
+SERVER_URL = f'http://{os.getenv("SERVER_URL")}'

@@ -3,11 +3,10 @@ from datetime import datetime
 
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, WebAppInfo
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from dotenv import load_dotenv
 
 from app.middlewares.i18n_init import i18n
-from settings import BASE_URL
-
-from dotenv import load_dotenv
+from settings import SERVER_URL
 
 load_dotenv()
 _ = i18n.gettext
@@ -23,19 +22,6 @@ async def deck_names(data, is_quick_add=None):
     for deck in data:
         name = deck['name']
         keyboard.add(InlineKeyboardButton(text=f'✿ {name}', callback_data=f'{callback_prefix}_{deck["slug"]}'))
-    # keyboard.add(InlineKeyboardButton(text=_('create_deck_ddn'), callback_data='deck_create'))
-    #
-    # match len(data):
-    #     case 1:
-    #         rows = (1, 1)
-    #     case 2:
-    #         rows = (2, 1)
-    #     case 3:
-    #         rows = (3, 1)
-    #     case n if n % 2 == 0:
-    #         rows = (2, 2)
-    #     case n if n % 3 == 0:
-    #         rows = (3, 1)
 
     return keyboard.adjust(3).as_markup()
 
@@ -135,8 +121,8 @@ async def choose_study_format(slug, study_mode, study_client):
     if 'web_app' in study_client:
         telegram_id = study_client['web_app']
         url = '{}/api/v1/study/web_app/{}?mode={}&slug={}&format={}' + f'&api-key={os.getenv("SERVER-TOKEN")}'
-        text_mode_params.update({'web_app': WebAppInfo(url=url.format(BASE_URL, telegram_id, study_mode, slug, 'text'))})
-        audio_mode_params.update({'web_app': WebAppInfo(url=url.format(BASE_URL, telegram_id, study_mode, slug, 'audio'))})
+        text_mode_params.update({'web_app': WebAppInfo(url=url.format(SERVER_URL, telegram_id, study_mode, slug, 'text'))})
+        audio_mode_params.update({'web_app': WebAppInfo(url=url.format(SERVER_URL, telegram_id, study_mode, slug, 'audio'))})
         btn1, btn2 = await back_to_decklist_or_deckdetails_btns(slug)
     else:
         text_mode_params.update({'callback_data': f'start_studying_{slug}_{study_mode}_text'})
